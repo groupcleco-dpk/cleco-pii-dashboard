@@ -3,207 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Cleco Pii — Input Data</title>
+<title>Cleco Pii — Input Staff</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',Tahoma,sans-serif;background:#071E1E;color:#E8F4F4;min-height:100vh;padding-bottom:30px}
-.header{background:#0A2525;border-bottom:1px solid #1A5F5F44;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
-.card{background:#0F2E2E;border:1px solid #1A5F5F44;border-radius:12px;padding:16px;margin:12px 14px}
-label{display:block;font-size:11px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;margin-top:12px}
-label:first-child{margin-top:0}
+.hdr{background:#0A2525;border-bottom:1px solid #1A5F5F44;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.card{background:#0F2E2E;border:1px solid #1A5F5F44;border-radius:12px;padding:16px;margin:0 14px 12px}
+label{display:block;font-size:11px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;margin-top:13px}
+label:first-of-type{margin-top:0}
 input,select,textarea{width:100%;background:#1A3A3A;border:1px solid #2D5555;border-radius:8px;padding:11px 13px;color:#E8F4F4;font-size:14px;font-family:inherit;outline:none}
-input:focus,select:focus,textarea:focus{border-color:#C9A84C;box-shadow:0 0 0 2px #C9A84C22}
-input[type=number]{-moz-appearance:textfield}
+input:focus,select:focus{border-color:#C9A84C;box-shadow:0 0 0 2px #C9A84C22}
 .btn-gold{width:100%;background:linear-gradient(135deg,#C9A84C,#E8C96D);color:#071E1E;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-gold:active{opacity:.85}
 .btn-outline{width:100%;background:transparent;border:1px solid #2D5555;color:#7AADAD;padding:11px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
-.tab-menu{display:flex;gap:6px;overflow-x:auto;padding:12px 14px 0;scrollbar-width:none}
-.tab-menu::-webkit-scrollbar{display:none}
-.tab-btn{border:none;cursor:pointer;font-weight:700;border-radius:20px;padding:8px 16px;font-size:12px;white-space:nowrap;flex-shrink:0}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:999;display:none;max-width:90%;text-align:center}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:12px 14px 0;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:none;cursor:pointer;font-weight:700;border-radius:20px;padding:8px 16px;font-size:12px;white-space:nowrap;flex-shrink:0}
 .section{display:none}
 .section.active{display:block}
-.pin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;gap:16px}
-.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:240px;margin-top:8px}
-.pin-key{background:#1A3A3A;border:1px solid #2D5555;border-radius:12px;padding:18px;font-size:20px;font-weight:700;cursor:pointer;color:#E8F4F4;text-align:center}
-.pin-key:active{background:#2D5555}
-.pin-dots{display:flex;gap:10px;margin:8px 0}
-.pin-dot{width:14px;height:14px;border-radius:50%;background:#1A3A3A;border:2px solid #2D5555;transition:all .2s}
-.pin-dot.filled{background:#C9A84C;border-color:#C9A84C}
-.riwayat-item{background:#1A3A3A;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 4px 20px #0008}
+/* PIN */
+.pin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;gap:14px}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:240px;margin-top:6px}
+.pin-key{background:#1A3A3A;border:1px solid #2D5555;border-radius:12px;padding:18px;font-size:20px;font-weight:700;cursor:pointer;color:#E8F4F4;text-align:center;user-select:none}
+.pin-key:active{background:#2D5555;transform:scale(.95)}
+.pin-dots{display:flex;gap:10px;margin:6px 0}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:#1A3A3A;border:2px solid #2D5555;transition:all .15s}
+.pin-dot.on{background:#C9A84C;border-color:#C9A84C}
+.ritem{background:#1A3A3A;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.info{margin-top:10px;padding:10px;background:#1A3A3A;border-radius:8px;font-size:11px;color:#7AADAD;line-height:1.5}
+.warn{background:#3A1A1A;color:#FF6B6B44}
 </style>
 </head>
 <body>
 
 <!-- PIN SCREEN -->
 <div id="pinScreen" class="pin-wrap">
-  <div style="font-size:36px">☕</div>
+  <div style="font-size:40px">☕</div>
   <div style="font-size:20px;font-weight:900;color:#C9A84C">Cleco Pii</div>
   <div style="font-size:13px;color:#7AADAD">Masukkan PIN Anda</div>
   <div class="pin-dots">
-    <div class="pin-dot" id="d0"></div>
-    <div class="pin-dot" id="d1"></div>
-    <div class="pin-dot" id="d2"></div>
-    <div class="pin-dot" id="d3"></div>
+    <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
   </div>
-  <div id="pinErr" style="color:#FF6B6B;font-size:12px;min-height:16px"></div>
+  <div id="pinErr" style="color:#FF6B6B;font-size:12px;min-height:16px;text-align:center"></div>
   <div class="pin-grid">
-    <div class="pin-key" onclick="pinPress('1')">1</div>
-    <div class="pin-key" onclick="pinPress('2')">2</div>
-    <div class="pin-key" onclick="pinPress('3')">3</div>
-    <div class="pin-key" onclick="pinPress('4')">4</div>
-    <div class="pin-key" onclick="pinPress('5')">5</div>
-    <div class="pin-key" onclick="pinPress('6')">6</div>
-    <div class="pin-key" onclick="pinPress('7')">7</div>
-    <div class="pin-key" onclick="pinPress('8')">8</div>
-    <div class="pin-key" onclick="pinPress('9')">9</div>
-    <div class="pin-key" onclick="pinPress('del')" style="color:#E07B54">⌫</div>
-    <div class="pin-key" onclick="pinPress('0')">0</div>
-    <div class="pin-key" onclick="pinPress('ok')" style="background:#C9A84C33;color:#C9A84C">✓</div>
+    <div class="pin-key" onclick="pp('1')">1</div><div class="pin-key" onclick="pp('2')">2</div><div class="pin-key" onclick="pp('3')">3</div>
+    <div class="pin-key" onclick="pp('4')">4</div><div class="pin-key" onclick="pp('5')">5</div><div class="pin-key" onclick="pp('6')">6</div>
+    <div class="pin-key" onclick="pp('7')">7</div><div class="pin-key" onclick="pp('8')">8</div><div class="pin-key" onclick="pp('9')">9</div>
+    <div class="pin-key" onclick="pp('del')" style="color:#E07B54">⌫</div>
+    <div class="pin-key" onclick="pp('0')">0</div>
+    <div class="pin-key" onclick="pp('ok')" style="background:#C9A84C33;color:#C9A84C">✓</div>
   </div>
-  <div style="font-size:10px;color:#4A7A7A;margin-top:8px;text-align:center">Batak: 1111 · Erika: 2222 · Bila: 3333 · Owner: 9999</div>
+  <div style="font-size:10px;color:#4A7A7A;text-align:center;margin-top:6px">
+    Batak:1111 · Erika:2222 · Bila:3333 · Rio:4444 · Owner:9999
+  </div>
 </div>
 
 <!-- MAIN APP -->
 <div id="mainApp" style="display:none">
-
-  <!-- HEADER -->
-  <div class="header">
-    <span style="font-size:20px">☕</span>
-    <div style="flex:1">
-      <div style="font-size:15px;font-weight:900;color:#C9A84C;line-height:1">Cleco Pii</div>
-      <div style="font-size:9px;color:#7AADAD">Input Data — <span id="namaStaff" style="color:#C9A84C"></span></div>
-    </div>
-    <button onclick="logout()" style="background:#1A3A3A;border:1px solid #2D5555;color:#7AADAD;padding:6px 12px;border-radius:8px;font-size:11px;cursor:pointer">Keluar</button>
-  </div>
-
-  <!-- TAB MENU -->
-  <div class="tab-menu">
-    <button class="tab-btn" id="tab1" onclick="switchTab(1)" style="background:linear-gradient(135deg,#C9A84C,#E8C96D);color:#071E1E">💰 Penjualan</button>
-    <button class="tab-btn" id="tab2" onclick="switchTab(2)" style="background:#1A3A3A;color:#7AADAD">🛒 Pengeluaran</button>
-    <button class="tab-btn" id="tab3" onclick="switchTab(3)" style="background:#1A3A3A;color:#7AADAD">📦 Stok Masuk</button>
-    <button class="tab-btn" id="tab4" onclick="switchTab(4)" style="background:#1A3A3A;color:#7AADAD">💼 Gaji/Kasbon</button>
-    <button class="tab-btn" id="tab5" onclick="switchTab(5)" style="background:#1A3A3A;color:#7AADAD">📋 Riwayat</button>
-  </div>
-
-  <!-- SECTION 1: PENJUALAN HARIAN -->
-  <div id="sec1" class="section active">
-    <div class="card">
-      <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">💰 Input Penjualan Harian</div>
-      <label>Tanggal</label>
-      <input type="date" id="pTgl">
-      <label>Total Penjualan (Rp)</label>
-      <input type="number" id="pJumlah" placeholder="Contoh: 1250000">
-      <label>Jumlah Transaksi</label>
-      <input type="number" id="pTrx" placeholder="Contoh: 25">
-      <label>Metode Pembayaran</label>
-      <select id="pMetode">
-        <option>QRIS</option>
-        <option>Tunai</option>
-        <option>Transfer</option>
-        <option>Campuran</option>
-      </select>
-      <label>Keterangan (opsional)</label>
-      <input type="text" id="pKet" placeholder="Contoh: Ramai, weekend">
-      <button class="btn-gold" onclick="submitPenjualan()">💾 Simpan Penjualan</button>
-    </div>
-  </div>
-
-  <!-- SECTION 2: PENGELUARAN -->
-  <div id="sec2" class="section">
-    <div class="card">
-      <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">🛒 Input Pengeluaran Bahan</div>
-      <label>Tanggal</label>
-      <input type="date" id="eTgl">
-      <label>Nama Bahan</label>
-      <input type="text" id="eNama" placeholder="Contoh: Susu Fresh Milk 1L">
-      <label>Kategori</label>
-      <select id="eKat">
-        <option value="BAHAN_BAR">Bahan Bar (Minuman)</option>
-        <option value="BAHAN_KITCHEN">Bahan Kitchen (Makanan)</option>
-        <option value="OPERASIONAL">Operasional</option>
-        <option value="LISTRIK">Listrik</option>
-        <option value="INTERNET">Internet</option>
-        <option value="KEAMANAN">Keamanan</option>
-        <option value="SEWA">Sewa</option>
-        <option value="LAIN_LAIN">Lain-lain</option>
-      </select>
-      <label>Total Harga (Rp)</label>
-      <input type="number" id="eJumlah" placeholder="Contoh: 85000">
-      <label>Keterangan (opsional)</label>
-      <input type="text" id="eKet" placeholder="Contoh: Beli di Indomaret">
-      <button class="btn-gold" onclick="submitPengeluaran()">💾 Simpan Pengeluaran</button>
-    </div>
-  </div>
-
-  <!-- SECTION 3: STOK MASUK -->
-  <div id="sec3" class="section">
-    <div class="card">
-      <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📦 Input Stok Bahan Masuk</div>
-      <label>Tanggal</label>
-      <input type="date" id="sTgl">
-      <label>Kategori Bahan</label>
-      <select id="sKat" onchange="loadStokList()">
-        <option value="Bar">Bahan Bar</option>
-        <option value="Kitchen">Bahan Kitchen</option>
-      </select>
-      <label>Nama Bahan</label>
-      <select id="sNama"><option>-- Pilih kategori dulu --</option></select>
-      <label>Jumlah Masuk</label>
-      <input type="number" id="sJumlah" placeholder="Contoh: 2" step="0.1">
-      <label>Satuan</label>
-      <input type="text" id="sSatuan" placeholder="kg / liter / pcs" readonly style="color:#7AADAD">
-      <button class="btn-gold" onclick="submitStok()">💾 Update Stok</button>
-      <div style="margin-top:12px;padding:10px;background:#1A3A3A;border-radius:8px;font-size:11px;color:#7AADAD">
-        ℹ️ Stok akan langsung terupdate di database dan dashboard owner
+  <div class="hdr">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:20px">☕</span>
+      <div>
+        <div style="font-size:15px;font-weight:900;color:#C9A84C;line-height:1">Cleco Pii</div>
+        <div style="font-size:9px;color:#7AADAD">Input · <span id="namaStaff" style="color:#C9A84C"></span></div>
       </div>
     </div>
-  </div>
-
-  <!-- SECTION 4: GAJI/KASBON -->
-  <div id="sec4" class="section">
-    <div class="card">
-      <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">💼 Input Kasbon / Gaji</div>
-      <label>Tanggal</label>
-      <input type="date" id="gTgl">
-      <label>Nama Karyawan</label>
-      <select id="gNama">
-        <option value="BATAK">Batak (Barista)</option>
-        <option value="ERIKA">Erika (Kitchen)</option>
-        <option value="BILA">Bila (Waiter)</option>
-        <option value="RIO">Rio (Konten)</option>
-      </select>
-      <label>Jenis</label>
-      <select id="gJenis">
-        <option value="kasbon">Kasbon (Pinjaman)</option>
-        <option value="lembur">Uang Lembur</option>
-        <option value="makan">Uang Makan</option>
-      </select>
-      <label>Jumlah (Rp)</label>
-      <input type="number" id="gJumlah" placeholder="Contoh: 200000">
-      <label>Keterangan</label>
-      <input type="text" id="gKet" placeholder="Contoh: Kasbon untuk kebutuhan darurat">
-      <button class="btn-gold" onclick="submitGaji()">💾 Simpan</button>
-      <div style="margin-top:10px;padding:10px;background:#3A1A1A;border-radius:8px;font-size:11px;color:#FF6B6B44">
-        ⚠️ Kasbon akan tercatat di jurnal dan dilaporkan ke owner
-      </div>
+    <div style="display:flex;gap:6px">
+      <a href="index.html" style="background:#1A3A3A;border:1px solid #2D5555;color:#7AADAD;padding:6px 10px;border-radius:8px;font-size:11px;text-decoration:none">📊</a>
+      <button onclick="logout()" style="background:#1A3A3A;border:1px solid #2D5555;color:#7AADAD;padding:6px 10px;border-radius:8px;font-size:11px;cursor:pointer">Keluar</button>
     </div>
   </div>
 
-  <!-- SECTION 5: RIWAYAT -->
-  <div id="sec5" class="section">
-    <div class="card">
-      <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📋 Riwayat Input Hari Ini</div>
-      <div id="riwayatList">
-        <div style="text-align:center;color:#7AADAD;padding:20px;font-size:12px">Memuat riwayat...</div>
-      </div>
-      <button class="btn-outline" onclick="loadRiwayat()">↻ Refresh Riwayat</button>
-    </div>
-  </div>
-
+  <div class="tabs" id="tabMenu"></div>
+  <div id="sections" style="margin-top:12px"></div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -211,256 +86,430 @@ const SB  = "https://rpogymhoemcwrjhollzq.supabase.co/rest/v1";
 const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwb2d5bWhvZW1jd3JqaG9sbHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Mzk3NjAsImV4cCI6MjA5MTExNTc2MH0.PjVc8OMpEZfLV2kils5obeYmILNHH0MpQ5sTs8QmV5w";
 const H   = {apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json","Prefer":"return=minimal"};
 
-// PIN SETUP
-const PINS = {
-  "1111":{nama:"Batak",jabatan:"Barista"},
-  "2222":{nama:"Erika",jabatan:"Kitchen"},
-  "3333":{nama:"Bila",jabatan:"Waiter"},
-  "9999":{nama:"Yogha",jabatan:"Owner"},
+// ── ROLES ────────────────────────────────────
+const USERS = {
+  "1111":{nama:"Batak",  jabatan:"Barista", role:"bar"},
+  "2222":{nama:"Erika",  jabatan:"Kitchen", role:"kitchen"},
+  "3333":{nama:"Bila",   jabatan:"Waiter",  role:"waiter"},
+  "4444":{nama:"Rio",    jabatan:"Konten",  role:"konten"},
+  "9999":{nama:"Yogha",  jabatan:"Owner",   role:"owner"},
 };
-let pinBuf = "", currentUser = null;
 
-function pinPress(k) {
-  if(k==="del"){ pinBuf=pinBuf.slice(0,-1); }
-  else if(k==="ok"){ checkPin(); return; }
-  else if(pinBuf.length<4){ pinBuf+=k; }
-  if(pinBuf.length===4) setTimeout(checkPin,200);
-  updateDots();
+// Menus per role
+const MENUS = {
+  bar:     [{id:"penjualan",icon:"💰",label:"Penjualan"},{id:"pengeluaran",icon:"🛒",label:"Pengeluaran"},{id:"stok_masuk",icon:"📦",label:"Stok Masuk"},{id:"stok_keluar",icon:"📤",label:"Stok Keluar"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
+  kitchen: [{id:"pengeluaran",icon:"🛒",label:"Pengeluaran"},{id:"stok_masuk",icon:"📦",label:"Stok Masuk"},{id:"stok_keluar",icon:"📤",label:"Stok Keluar"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
+  waiter:  [{id:"penjualan",icon:"💰",label:"Penjualan"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
+  konten:  [{id:"konten",icon:"📲",label:"Konten"},{id:"promo",icon:"🎯",label:"Promo"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
+  owner:   [{id:"penjualan",icon:"💰",label:"Penjualan"},{id:"pengeluaran",icon:"🛒",label:"Pengeluaran"},{id:"stok_masuk",icon:"📦",label:"Stok Masuk"},{id:"stok_keluar",icon:"📤",label:"Stok Keluar"},{id:"gaji",icon:"💼",label:"Gaji/Kasbon"},{id:"konten",icon:"📲",label:"Konten"},{id:"promo",icon:"🎯",label:"Promo"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
+};
+
+let pinBuf="", user=null, activeTab="", stokData=[];
+
+// ── PIN ──────────────────────────────────────
+function pp(k){
+  if(k==="del"){pinBuf=pinBuf.slice(0,-1);}
+  else if(k==="ok"){checkPin();return;}
+  else if(pinBuf.length<4){pinBuf+=k;}
+  if(pinBuf.length===4)setTimeout(checkPin,180);
+  updDots();
 }
-
-function updateDots() {
-  for(let i=0;i<4;i++) {
-    document.getElementById("d"+i).className = "pin-dot"+(i<pinBuf.length?" filled":"");
-  }
-}
-
-function checkPin() {
-  if(PINS[pinBuf]) {
-    currentUser = PINS[pinBuf];
-    document.getElementById("namaStaff").textContent = currentUser.nama+" ("+currentUser.jabatan+")";
+function updDots(){for(let i=0;i<4;i++)document.getElementById("d"+i).className="pin-dot"+(i<pinBuf.length?" on":"");}
+function checkPin(){
+  if(USERS[pinBuf]){
+    user=USERS[pinBuf];
+    document.getElementById("namaStaff").textContent=user.nama+" ("+user.jabatan+")";
     document.getElementById("pinScreen").style.display="none";
     document.getElementById("mainApp").style.display="block";
-    setDefaultDates();
-    loadStokList();
-  } else {
-    document.getElementById("pinErr").textContent = "❌ PIN salah, coba lagi";
-    pinBuf=""; updateDots();
+    buildMenus();
+  }else{
+    document.getElementById("pinErr").textContent="❌ PIN salah, coba lagi";
+    pinBuf="";updDots();
     setTimeout(()=>document.getElementById("pinErr").textContent="",2000);
   }
 }
-
-function logout() {
-  pinBuf=""; currentUser=null;
+function logout(){
+  pinBuf="";user=null;
   document.getElementById("mainApp").style.display="none";
   document.getElementById("pinScreen").style.display="flex";
-  updateDots();
+  updDots();
 }
 
-function setDefaultDates() {
-  const today = new Date().toISOString().slice(0,10);
-  ["pTgl","eTgl","sTgl","gTgl"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.value = today;
+// ── BUILD MENUS ──────────────────────────────
+function buildMenus(){
+  const menus = MENUS[user.role]||[];
+  const tabEl = document.getElementById("tabMenu");
+  const secEl = document.getElementById("sections");
+  tabEl.innerHTML="";secEl.innerHTML="";
+  menus.forEach((m,i)=>{
+    const btn=document.createElement("button");
+    btn.className="tab";btn.id="tb_"+m.id;
+    btn.textContent=m.icon+" "+m.label;
+    btn.onclick=()=>switchSec(m.id);
+    btn.style.background=i===0?"linear-gradient(135deg,#C9A84C,#E8C96D)":"#1A3A3A";
+    btn.style.color=i===0?"#071E1E":"#7AADAD";
+    tabEl.appendChild(btn);
+    const sec=document.createElement("div");
+    sec.className="section"+(i===0?" active":"");
+    sec.id="sec_"+m.id;
+    sec.innerHTML=buildSection(m.id);
+    secEl.appendChild(sec);
   });
+  activeTab=menus[0]?.id||"";
+  setDefaultDates();
+  if(menus.find(m=>m.id==="stok_masuk")||menus.find(m=>m.id==="stok_keluar"))loadStok();
 }
 
-// TOAST
-function toast(msg, ok=true) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.style.background = ok?"#1A4A2A":"#3A1A1A";
-  t.style.color = ok?"#4CAF50":"#FF6B6B";
-  t.style.border = "1px solid "+(ok?"#4CAF50":"#FF6B6B");
-  t.style.display = "block";
-  setTimeout(()=>t.style.display="none", 3000);
+function switchSec(id){
+  const menus=MENUS[user.role]||[];
+  menus.forEach(m=>{
+    const s=document.getElementById("sec_"+m.id);
+    if(s)s.className="section"+(m.id===id?" active":"");
+    const b=document.getElementById("tb_"+m.id);
+    if(b){b.style.background=m.id===id?"linear-gradient(135deg,#C9A84C,#E8C96D)":"#1A3A3A";b.style.color=m.id===id?"#071E1E":"#7AADAD";}
+  });
+  activeTab=id;
+  if(id==="riwayat")loadRiwayat();
+  if(id==="stok_masuk"||id==="stok_keluar")loadStok();
 }
 
-// TABS
-function switchTab(n) {
-  for(let i=1;i<=5;i++){
-    document.getElementById("sec"+i).className="section"+(i===n?" active":"");
-    const btn=document.getElementById("tab"+i);
-    btn.style.background=i===n?"linear-gradient(135deg,#C9A84C,#E8C96D)":"#1A3A3A";
-    btn.style.color=i===n?"#071E1E":"#7AADAD";
-  }
-  if(n===5) loadRiwayat();
-  if(n===3) loadStokList();
+// ── BUILD SECTION HTML ───────────────────────
+function buildSection(id){
+  const today=new Date().toISOString().slice(0,10);
+  if(id==="penjualan") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">💰 Input Penjualan Harian</div>
+    <label>Tanggal</label><input type="date" id="pTgl" value="${today}">
+    <label>Total Penjualan (Rp)</label><input type="number" id="pJml" placeholder="Contoh: 1250000">
+    <label>Jumlah Transaksi</label><input type="number" id="pTrx" placeholder="Contoh: 25">
+    <label>Metode Pembayaran</label><select id="pMet"><option>QRIS</option><option>Tunai</option><option>Transfer</option><option>Campuran</option></select>
+    <label>Keterangan (opsional)</label><input type="text" id="pKet" placeholder="Contoh: Ramai, akhir pekan">
+    <button class="btn-gold" onclick="submitPenjualan()">💾 Simpan Penjualan</button>
+  </div>`;
+
+  if(id==="pengeluaran") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">🛒 Input Pengeluaran</div>
+    <label>Tanggal</label><input type="date" id="eTgl" value="${today}">
+    <label>Nama Bahan / Item</label><input type="text" id="eNama" placeholder="Contoh: Susu Fresh Milk 1L">
+    <label>Kategori</label><select id="eKat">
+      <option value="BAHAN_BAR">Bahan Bar (Minuman)</option>
+      <option value="BAHAN_KITCHEN">Bahan Kitchen (Makanan)</option>
+      <option value="OPERASIONAL">Operasional</option>
+      <option value="LISTRIK">Listrik</option>
+      <option value="INTERNET">Internet</option>
+      <option value="KEAMANAN">Keamanan</option>
+      <option value="SEWA">Sewa Tempat</option>
+      <option value="LAIN_LAIN">Lain-lain</option>
+    </select>
+    <label>Total Harga (Rp)</label><input type="number" id="eJml" placeholder="Contoh: 85000">
+    <label>Keterangan</label><input type="text" id="eKet" placeholder="Contoh: Beli di Alfamart">
+    <button class="btn-gold" onclick="submitPengeluaran()">💾 Simpan Pengeluaran</button>
+  </div>`;
+
+  if(id==="stok_masuk") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📦 Stok Bahan Masuk</div>
+    <label>Tanggal</label><input type="date" id="smTgl" value="${today}">
+    <label>Kategori</label><select id="smKat" onchange="filterStok('masuk')"><option value="Bar">Bahan Bar</option><option value="Kitchen">Bahan Kitchen</option></select>
+    <label>Nama Bahan</label><select id="smNama" onchange="updSatuanMasuk()"><option>Memuat...</option></select>
+    <label>Jumlah Masuk</label><input type="number" id="smJml" placeholder="Contoh: 2" step="0.1">
+    <label>Satuan</label><input type="text" id="smSat" readonly style="color:#7AADAD">
+    <button class="btn-gold" onclick="submitStokMasuk()">💾 Update Stok Masuk</button>
+    <div class="info">ℹ️ Stok sisa akan otomatis bertambah di dashboard</div>
+  </div>`;
+
+  if(id==="stok_keluar") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📤 Stok Bahan Keluar</div>
+    <label>Tanggal</label><input type="date" id="skTgl" value="${today}">
+    <label>Kategori</label><select id="skKat" onchange="filterStok('keluar')"><option value="Bar">Bahan Bar</option><option value="Kitchen">Bahan Kitchen</option></select>
+    <label>Nama Bahan</label><select id="skNama" onchange="updSatuanKeluar()"><option>Memuat...</option></select>
+    <label>Jumlah Keluar / Terpakai</label><input type="number" id="skJml" placeholder="Contoh: 0.5" step="0.1">
+    <label>Satuan</label><input type="text" id="skSat" readonly style="color:#7AADAD">
+    <label>Keterangan</label><input type="text" id="skKet" placeholder="Contoh: Pemakaian harian bar">
+    <button class="btn-gold" onclick="submitStokKeluar()">💾 Catat Stok Keluar</button>
+    <div class="info">ℹ️ Stok sisa akan otomatis berkurang di dashboard</div>
+  </div>`;
+
+  if(id==="gaji") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">💼 Input Kasbon / Gaji</div>
+    <label>Tanggal</label><input type="date" id="gTgl" value="${today}">
+    <label>Nama Karyawan</label><select id="gNama">
+      <option value="BATAK">Batak (Barista)</option>
+      <option value="ERIKA">Erika (Kitchen)</option>
+      <option value="BILA">Bila (Waiter)</option>
+      <option value="RIO">Rio (Konten)</option>
+    </select>
+    <label>Jenis</label><select id="gJenis">
+      <option value="kasbon">Kasbon (Pinjaman)</option>
+      <option value="lembur">Uang Lembur</option>
+      <option value="makan">Uang Makan</option>
+      <option value="gaji_tambahan">Gaji Tambahan</option>
+    </select>
+    <label>Jumlah (Rp)</label><input type="number" id="gJml" placeholder="Contoh: 200000">
+    <label>Keterangan</label><input type="text" id="gKet" placeholder="Contoh: Kasbon kebutuhan darurat">
+    <button class="btn-gold" onclick="submitGaji()">💾 Simpan</button>
+    <div class="info warn">⚠️ Kasbon otomatis tercatat di jurnal & dilaporkan ke owner</div>
+  </div>`;
+
+  if(id==="konten") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📲 Input Konten</div>
+    <label>Tanggal Tayang</label><input type="date" id="knTgl" value="${today}">
+    <label>Platform</label><select id="knPlatform">
+      <option>Instagram</option><option>TikTok</option><option>WhatsApp Story</option><option>Facebook</option>
+    </select>
+    <label>Jenis Konten</label><select id="knJenis">
+      <option>Reels / Video</option><option>Feed / Foto</option><option>Story</option><option>TikTok</option><option>Carousel</option>
+    </select>
+    <label>Judul / Tema Konten</label><input type="text" id="knJudul" placeholder="Contoh: Tutorial Klepon Latte">
+    <label>Caption</label><textarea id="knCaption" rows="3" style="resize:vertical" placeholder="Tulis caption konten..."></textarea>
+    <label>Hashtag</label><input type="text" id="knHashtag" placeholder="#clecopii #coffeeshop #depok">
+    <label>Status</label><select id="knStatus"><option>Tayang</option><option>Draft</option><option>Scheduled</option></select>
+    <label>Link Konten (opsional)</label><input type="text" id="knLink" placeholder="https://www.tiktok.com/...">
+    <label>Views</label><input type="number" id="knViews" placeholder="0">
+    <label>Likes</label><input type="number" id="knLikes" placeholder="0">
+    <label>Komentar</label><input type="number" id="knKom" placeholder="0">
+    <label>Shares</label><input type="number" id="knShares" placeholder="0">
+    <button class="btn-gold" onclick="submitKonten()">💾 Simpan Konten</button>
+  </div>`;
+
+  if(id==="promo") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">🎯 Input / Update Promo</div>
+    <label>Nama Promo</label><input type="text" id="prNama" placeholder="Contoh: Paket Gibah Gembira">
+    <label>Deskripsi</label><textarea id="prDesc" rows="2" style="resize:vertical" placeholder="Jelaskan promo ini..."></textarea>
+    <label>Tanggal Mulai</label><input type="date" id="prMulai" value="${today}">
+    <label>Tanggal Selesai</label><input type="date" id="prSelesai">
+    <label>Diskon / Keuntungan</label><input type="text" id="prDiskon" placeholder="Contoh: 10% atau Gratis minuman">
+    <label>Syarat & Ketentuan</label><input type="text" id="prSyarat" placeholder="Contoh: Min. beli 2 item">
+    <label>Target Pelanggan</label><input type="text" id="prTarget" placeholder="Contoh: Mahasiswa, pasangan">
+    <label>Status</label><select id="prStatus"><option>Aktif</option><option>Selesai</option><option>Dibatalkan</option></select>
+    <label>Catatan Hasil (opsional)</label><textarea id="prHasil" rows="2" style="resize:vertical" placeholder="Isi setelah promo selesai..."></textarea>
+    <button class="btn-gold" onclick="submitPromo()">💾 Simpan Promo</button>
+    <div id="promoList" style="margin-top:16px">
+      <div style="font-size:12px;color:#C9A84C;font-weight:700;margin-bottom:8px">📋 Promo Terdaftar</div>
+      <div id="promoListContent" style="color:#7AADAD;font-size:12px">Memuat...</div>
+    </div>
+  </div>`;
+
+  if(id==="riwayat") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📋 Riwayat Input Hari Ini</div>
+    <div id="riwayatList"><div style="text-align:center;color:#7AADAD;padding:20px;font-size:12px">Memuat...</div></div>
+    <button class="btn-outline" onclick="loadRiwayat()">↻ Refresh</button>
+  </div>`;
+  return "<div class='card'>Section tidak ditemukan</div>";
 }
 
-// Supabase helpers
-async function sbGet(table, params="") {
-  const r = await fetch(`${SB}/${table}?${params}`,{headers:{apikey:KEY,Authorization:"Bearer "+KEY}});
+// ── HELPERS ──────────────────────────────────
+function toast(msg,ok=true){
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  t.style.background=ok?"#1A4A2A":"#3A1A1A";
+  t.style.color=ok?"#4CAF50":"#FF6B6B";
+  t.style.border="1px solid "+(ok?"#4CAF50":"#FF6B6B");
+  t.style.display="block";
+  setTimeout(()=>t.style.display="none",3500);
+}
+
+function setDefaultDates(){
+  const today=new Date().toISOString().slice(0,10);
+  document.querySelectorAll("input[type=date]").forEach(el=>{if(!el.value)el.value=today;});
+}
+
+async function sbGet(table,params=""){
+  const r=await fetch(`${SB}/${table}?${params}`,{headers:{apikey:KEY,Authorization:"Bearer "+KEY}});
   return r.json();
 }
-async function sbPost(table, data) {
-  const r = await fetch(`${SB}/${table}`,{method:"POST",headers:H,body:JSON.stringify(data)});
+async function sbPost(table,data){
+  const r=await fetch(`${SB}/${table}`,{method:"POST",headers:H,body:JSON.stringify(data)});
   if(!r.ok){const e=await r.json();throw new Error(e.message||r.status);}
 }
-async function sbPatch(table, filter, data) {
-  const r = await fetch(`${SB}/${table}?${filter}`,{method:"PATCH",headers:H,body:JSON.stringify(data)});
+async function sbPatch(table,filter,data){
+  const r=await fetch(`${SB}/${table}?${filter}`,{method:"PATCH",headers:H,body:JSON.stringify(data)});
   if(!r.ok){const e=await r.json();throw new Error(e.message||r.status);}
 }
-
-// Get next TRX number
-async function nextTrx() {
-  const data = await sbGet("jurnal_harian","select=no_trx&order=created_at.desc&limit=1");
-  if(!data||!data.length||!data[0].no_trx) return "TRX-001";
-  const last = parseInt((data[0].no_trx||"TRX-000").replace("TRX-",""))||0;
+async function nextTrx(){
+  const d=await sbGet("jurnal_harian","select=no_trx&order=created_at.desc&limit=1");
+  const last=parseInt((d&&d[0]&&d[0].no_trx||"TRX-000").replace("TRX-",""))||0;
   return "TRX-"+(last+1).toString().padStart(3,"0");
 }
 
-// ── SUBMIT PENJUALAN ─────────────────────────
-async function submitPenjualan() {
-  const tgl = document.getElementById("pTgl").value;
-  const jml = parseInt(document.getElementById("pJumlah").value);
-  const trx = document.getElementById("pTrx").value;
-  const ket = document.getElementById("pKet").value;
-  const met = document.getElementById("pMetode").value;
-  if(!tgl||!jml||jml<=0){toast("❌ Isi tanggal dan jumlah penjualan",false);return;}
-  try {
-    const no = await nextTrx();
-    await sbPost("jurnal_harian",{
-      tanggal:tgl,
-      no_trx:no,
-      keterangan:"Penjualan Harian"+(ket?" — "+ket:"")+(trx?" ("+trx+" trx, "+met+")":""),
-      kategori:"PEMASUKAN",
-      debit:jml,
-      kredit:0,
-      sumber:"input_staff_"+currentUser.nama.toLowerCase()
-    });
-    toast("✅ Penjualan Rp "+jml.toLocaleString("id-ID")+" berhasil disimpan!");
-    document.getElementById("pJumlah").value="";
-    document.getElementById("pTrx").value="";
-    document.getElementById("pKet").value="";
-  } catch(e){ toast("❌ Gagal: "+e.message,false); }
+// ── STOK LOAD ─────────────────────────────────
+async function loadStok(){
+  try{
+    stokData=await sbGet("stok_bahan","select=id,nama_bahan,satuan,sisa_stok,masuk,keluar,kategori&order=nama_bahan");
+    filterStok("masuk");filterStok("keluar");
+  }catch(e){console.error(e);}
+}
+function filterStok(type){
+  const kat=document.getElementById(type==="masuk"?"smKat":"skKat")?.value||"Bar";
+  const arr=stokData.filter(s=>s.kategori===kat);
+  const sel=document.getElementById(type==="masuk"?"smNama":"skNama");
+  if(sel){
+    sel.innerHTML=arr.map(s=>`<option value="${s.id}" data-satuan="${s.satuan}" data-sisa="${s.sisa_stok}">${s.nama_bahan} (sisa: ${s.sisa_stok} ${s.satuan})</option>`).join("");
+    if(type==="masuk")updSatuanMasuk();else updSatuanKeluar();
+  }
+}
+function updSatuanMasuk(){const s=document.getElementById("smNama");const o=s?.options[s.selectedIndex];if(document.getElementById("smSat"))document.getElementById("smSat").value=o?.dataset?.satuan||"";}
+function updSatuanKeluar(){const s=document.getElementById("skNama");const o=s?.options[s.selectedIndex];if(document.getElementById("skSat"))document.getElementById("skSat").value=o?.dataset?.satuan||"";}
+
+// ── SUBMITS ──────────────────────────────────
+async function submitPenjualan(){
+  const tgl=document.getElementById("pTgl")?.value;
+  const jml=parseInt(document.getElementById("pJml")?.value);
+  const trx=document.getElementById("pTrx")?.value;
+  const ket=document.getElementById("pKet")?.value;
+  const met=document.getElementById("pMet")?.value;
+  if(!tgl||!jml||jml<=0){toast("❌ Isi tanggal dan jumlah",false);return;}
+  try{
+    const no=await nextTrx();
+    await sbPost("jurnal_harian",{tanggal:tgl,no_trx:no,keterangan:"Penjualan Harian"+(ket?" — "+ket:"")+(trx?" ("+trx+" trx, "+met+")":""),kategori:"PEMASUKAN",debit:jml,kredit:0,sumber:"staff_"+user.nama.toLowerCase()});
+    toast("✅ Penjualan Rp "+jml.toLocaleString("id-ID")+" tersimpan!");
+    document.getElementById("pJml").value="";document.getElementById("pTrx").value="";document.getElementById("pKet").value="";
+  }catch(e){toast("❌ "+e.message,false);}
 }
 
-// ── SUBMIT PENGELUARAN ───────────────────────
-async function submitPengeluaran() {
-  const tgl = document.getElementById("eTgl").value;
-  const nama = document.getElementById("eNama").value;
-  const kat = document.getElementById("eKat").value;
-  const jml = parseInt(document.getElementById("eJumlah").value);
-  const ket = document.getElementById("eKet").value;
-  if(!tgl||!nama||!jml||jml<=0){toast("❌ Isi semua field yang wajib",false);return;}
-  try {
-    const no = await nextTrx();
-    await sbPost("jurnal_harian",{
-      tanggal:tgl,
-      no_trx:no,
-      keterangan:nama+(ket?" — "+ket:""),
-      kategori:kat,
-      debit:0,
-      kredit:jml,
-      sumber:"input_staff_"+currentUser.nama.toLowerCase()
-    });
-    toast("✅ Pengeluaran "+nama+" Rp "+jml.toLocaleString("id-ID")+" disimpan!");
-    document.getElementById("eNama").value="";
-    document.getElementById("eJumlah").value="";
-    document.getElementById("eKet").value="";
-  } catch(e){ toast("❌ Gagal: "+e.message,false); }
+async function submitPengeluaran(){
+  const tgl=document.getElementById("eTgl")?.value;
+  const nama=document.getElementById("eNama")?.value;
+  const kat=document.getElementById("eKat")?.value;
+  const jml=parseInt(document.getElementById("eJml")?.value);
+  const ket=document.getElementById("eKet")?.value;
+  if(!tgl||!nama||!jml||jml<=0){toast("❌ Isi semua field",false);return;}
+  try{
+    const no=await nextTrx();
+    await sbPost("jurnal_harian",{tanggal:tgl,no_trx:no,keterangan:nama+(ket?" — "+ket:""),kategori:kat,debit:0,kredit:jml,sumber:"staff_"+user.nama.toLowerCase()});
+    toast("✅ Pengeluaran "+nama+" Rp "+jml.toLocaleString("id-ID")+" tersimpan!");
+    document.getElementById("eNama").value="";document.getElementById("eJml").value="";document.getElementById("eKet").value="";
+  }catch(e){toast("❌ "+e.message,false);}
 }
 
-// ── LOAD STOK LIST ───────────────────────────
-let stokData = [];
-async function loadStokList() {
-  const kat = document.getElementById("sKat")?.value||"Bar";
-  try {
-    stokData = await sbGet("stok_bahan","select=id,nama_bahan,satuan,sisa_stok&order=nama_bahan&kategori=eq."+kat);
-    const sel = document.getElementById("sNama");
-    sel.innerHTML = stokData.map(s=>`<option value="${s.id}" data-satuan="${s.satuan}">${s.nama_bahan} (sisa: ${s.sisa_stok} ${s.satuan})</option>`).join("");
-    updateSatuan();
-    sel.onchange = updateSatuan;
-  } catch(e){ console.error(e); }
-}
-function updateSatuan(){
-  const sel=document.getElementById("sNama");
-  const opt=sel.options[sel.selectedIndex];
-  document.getElementById("sSatuan").value=opt?.dataset?.satuan||"";
-}
-
-// ── SUBMIT STOK ──────────────────────────────
-async function submitStok() {
-  const tgl = document.getElementById("sTgl").value;
-  const id = document.getElementById("sNama").value;
-  const jml = parseFloat(document.getElementById("sJumlah").value);
-  const satuan = document.getElementById("sSatuan").value;
+async function submitStokMasuk(){
+  const tgl=document.getElementById("smTgl")?.value;
+  const id=document.getElementById("smNama")?.value;
+  const jml=parseFloat(document.getElementById("smJml")?.value);
+  const sat=document.getElementById("smSat")?.value;
   if(!tgl||!id||!jml||jml<=0){toast("❌ Isi semua field",false);return;}
-  const item = stokData.find(s=>s.id===id);
+  const item=stokData.find(s=>s.id===id);
   if(!item){toast("❌ Bahan tidak ditemukan",false);return;}
-  try {
-    const newSisa = (parseFloat(item.sisa_stok)||0)+jml;
-    await sbPatch("stok_bahan","id=eq."+id,{
-      masuk: (item.masuk||0)+jml,
-      sisa_stok: newSisa
-    });
-    // Juga catat di jurnal sebagai info
-    const no = await nextTrx();
-    await sbPost("jurnal_harian",{
-      tanggal:tgl,
-      no_trx:no,
-      keterangan:"Stok Masuk: "+item.nama_bahan+" +"+jml+" "+satuan,
-      kategori:"LAIN_LAIN",
-      debit:0,kredit:0,
-      sumber:"input_stok_"+currentUser.nama.toLowerCase()
-    });
-    toast("✅ Stok "+item.nama_bahan+" +"+jml+" "+satuan+" diupdate!");
-    document.getElementById("sJumlah").value="";
-    loadStokList();
-  } catch(e){ toast("❌ Gagal: "+e.message,false); }
+  try{
+    const newSisa=parseFloat(item.sisa_stok||0)+jml;
+    const newMasuk=parseFloat(item.masuk||0)+jml;
+    await sbPatch("stok_bahan","id=eq."+id,{masuk:newMasuk,sisa_stok:newSisa});
+    await sbPost("stok_keluar",{tanggal:tgl,stok_id:id,nama_bahan:item.nama_bahan,kategori:item.kategori,jumlah:-jml,satuan:sat,keterangan:"Stok masuk +"+jml+" "+sat,input_oleh:user.nama});
+    toast("✅ Stok "+item.nama_bahan+" +"+jml+" "+sat);
+    document.getElementById("smJml").value="";
+    stokData=stokData.map(s=>s.id===id?{...s,sisa_stok:newSisa,masuk:newMasuk}:s);
+    filterStok("masuk");
+  }catch(e){toast("❌ "+e.message,false);}
 }
 
-// ── SUBMIT GAJI/KASBON ───────────────────────
-async function submitGaji() {
-  const tgl = document.getElementById("gTgl").value;
-  const nama = document.getElementById("gNama").value;
-  const jenis = document.getElementById("gJenis").value;
-  const jml = parseInt(document.getElementById("gJumlah").value);
-  const ket = document.getElementById("gKet").value;
+async function submitStokKeluar(){
+  const tgl=document.getElementById("skTgl")?.value;
+  const id=document.getElementById("skNama")?.value;
+  const jml=parseFloat(document.getElementById("skJml")?.value);
+  const sat=document.getElementById("skSat")?.value;
+  const ket=document.getElementById("skKet")?.value;
+  if(!tgl||!id||!jml||jml<=0){toast("❌ Isi semua field",false);return;}
+  const item=stokData.find(s=>s.id===id);
+  if(!item){toast("❌ Bahan tidak ditemukan",false);return;}
+  const newSisa=parseFloat(item.sisa_stok||0)-jml;
+  if(newSisa<0){toast("⚠️ Stok tidak cukup! Sisa: "+item.sisa_stok+" "+sat,false);return;}
+  try{
+    const newKeluar=parseFloat(item.keluar||0)+jml;
+    await sbPatch("stok_bahan","id=eq."+id,{keluar:newKeluar,sisa_stok:newSisa});
+    await sbPost("stok_keluar",{tanggal:tgl,stok_id:id,nama_bahan:item.nama_bahan,kategori:item.kategori,jumlah:jml,satuan:sat,keterangan:ket||"Pemakaian harian",input_oleh:user.nama});
+    toast("✅ Stok "+item.nama_bahan+" -"+jml+" "+sat+" tercatat");
+    document.getElementById("skJml").value="";document.getElementById("skKet").value="";
+    stokData=stokData.map(s=>s.id===id?{...s,sisa_stok:newSisa,keluar:newKeluar}:s);
+    filterStok("keluar");
+  }catch(e){toast("❌ "+e.message,false);}
+}
+
+async function submitGaji(){
+  const tgl=document.getElementById("gTgl")?.value;
+  const nama=document.getElementById("gNama")?.value;
+  const jenis=document.getElementById("gJenis")?.value;
+  const jml=parseInt(document.getElementById("gJml")?.value);
+  const ket=document.getElementById("gKet")?.value;
   if(!tgl||!jml||jml<=0){toast("❌ Isi semua field",false);return;}
-  const label = jenis==="kasbon"?"Kasbon":jenis==="lembur"?"Uang Lembur":"Uang Makan";
-  try {
-    const no = await nextTrx();
-    await sbPost("jurnal_harian",{
-      tanggal:tgl,
-      no_trx:no,
-      keterangan:label+" "+nama+(ket?" — "+ket:""),
-      kategori:"GAJI",
-      debit:0,
-      kredit:jml,
-      sumber:"input_gaji_"+currentUser.nama.toLowerCase()
-    });
+  const label=jenis==="kasbon"?"Kasbon":jenis==="lembur"?"Uang Lembur":jenis==="makan"?"Uang Makan":"Gaji Tambahan";
+  try{
+    const no=await nextTrx();
+    await sbPost("jurnal_harian",{tanggal:tgl,no_trx:no,keterangan:label+" "+nama+(ket?" — "+ket:""),kategori:"GAJI",debit:0,kredit:jml,sumber:"owner"});
     toast("✅ "+label+" "+nama+" Rp "+jml.toLocaleString("id-ID")+" dicatat!");
-    document.getElementById("gJumlah").value="";
-    document.getElementById("gKet").value="";
-  } catch(e){ toast("❌ Gagal: "+e.message,false); }
+    document.getElementById("gJml").value="";document.getElementById("gKet").value="";
+  }catch(e){toast("❌ "+e.message,false);}
 }
 
-// ── RIWAYAT ──────────────────────────────────
-async function loadRiwayat() {
-  const today = new Date().toISOString().slice(0,10);
-  const el = document.getElementById("riwayatList");
-  el.innerHTML = '<div style="text-align:center;color:#7AADAD;font-size:12px;padding:10px">Memuat...</div>';
-  try {
-    const data = await sbGet("jurnal_harian","select=*&order=created_at.desc&tanggal=eq."+today+"&limit=30");
-    if(!data||!data.length){
-      el.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:20px">Belum ada transaksi hari ini</div>';
-      return;
-    }
-    const KAT_C={PEMASUKAN:"#C9A84C",BAHAN_BAR:"#2D9D9D",BAHAN_KITCHEN:"#3DAD8D",GAJI:"#E07B54",OPERASIONAL:"#7B5EA7",LISTRIK:"#5496E0",LAIN_LAIN:"#808080"};
-    el.innerHTML = data.map(r=>`
-      <div class="riwayat-item">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.keterangan}</div>
-          <div style="font-size:10px;color:#7AADAD;margin-top:2px">${r.no_trx} · <span style="color:${KAT_C[r.kategori]||"#7AADAD"}">${(r.kategori||"").replace(/_/g," ")}</span></div>
-        </div>
-        <div style="text-align:right;flex-shrink:0;margin-left:10px">
-          ${r.debit>0?'<div style="color:#C9A84C;font-weight:700;font-size:12px">+Rp '+r.debit.toLocaleString("id-ID")+'</div>':""}
-          ${r.kredit>0?'<div style="color:#E07B54;font-weight:700;font-size:12px">-Rp '+r.kredit.toLocaleString("id-ID")+'</div>':""}
-        </div>
-      </div>`).join("");
-  } catch(e){ el.innerHTML='<div style="color:#FF6B6B;font-size:12px;padding:10px">❌ '+e.message+'</div>'; }
+async function submitKonten(){
+  const tgl=document.getElementById("knTgl")?.value;
+  const judul=document.getElementById("knJudul")?.value;
+  if(!tgl||!judul){toast("❌ Isi tanggal dan judul",false);return;}
+  try{
+    await sbPost("monitoring_konten",{
+      tanggal:tgl,
+      platform:document.getElementById("knPlatform")?.value,
+      jenis:document.getElementById("knJenis")?.value,
+      judul:judul,
+      caption:document.getElementById("knCaption")?.value,
+      hashtag:document.getElementById("knHashtag")?.value,
+      status:document.getElementById("knStatus")?.value,
+      link:document.getElementById("knLink")?.value,
+      views:parseInt(document.getElementById("knViews")?.value)||0,
+      likes:parseInt(document.getElementById("knLikes")?.value)||0,
+      komentar:parseInt(document.getElementById("knKom")?.value)||0,
+      shares:parseInt(document.getElementById("knShares")?.value)||0,
+      input_oleh:user.nama
+    });
+    toast("✅ Konten '"+judul+"' berhasil disimpan!");
+    ["knJudul","knCaption","knHashtag","knLink","knViews","knLikes","knKom","knShares"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  }catch(e){toast("❌ "+e.message,false);}
 }
+
+async function submitPromo(){
+  const nama=document.getElementById("prNama")?.value;
+  const mulai=document.getElementById("prMulai")?.value;
+  if(!nama||!mulai){toast("❌ Isi nama promo dan tanggal mulai",false);return;}
+  try{
+    await sbPost("promo",{
+      nama_promo:nama,
+      deskripsi:document.getElementById("prDesc")?.value,
+      tgl_mulai:mulai,
+      tgl_selesai:document.getElementById("prSelesai")?.value||null,
+      diskon:document.getElementById("prDiskon")?.value,
+      syarat:document.getElementById("prSyarat")?.value,
+      target:document.getElementById("prTarget")?.value,
+      status:document.getElementById("prStatus")?.value,
+      hasil:document.getElementById("prHasil")?.value,
+      input_oleh:user.nama
+    });
+    toast("✅ Promo '"+nama+"' disimpan!");
+    ["prNama","prDesc","prDiskon","prSyarat","prTarget","prHasil"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+    loadPromoList();
+  }catch(e){toast("❌ "+e.message,false);}
+}
+
+async function loadPromoList(){
+  const el=document.getElementById("promoListContent");
+  if(!el)return;
+  try{
+    const data=await sbGet("promo","select=nama_promo,tgl_mulai,tgl_selesai,status&order=tgl_mulai.desc&limit=10");
+    el.innerHTML=data.map(p=>`<div class="ritem"><div><div style="font-size:12px;font-weight:600">${p.nama_promo}</div><div style="font-size:10px;color:#7AADAD">${p.tgl_mulai||""} ${p.tgl_selesai?"→"+p.tgl_selesai:""}</div></div><span style="font-size:10px;font-weight:700;color:${p.status==="Aktif"?"#4CAF50":p.status==="Selesai"?"#7AADAD":"#FF6B6B"}">${p.status}</span></div>`).join("");
+  }catch(e){el.textContent="Gagal memuat";}
+}
+
+async function loadRiwayat(){
+  const el=document.getElementById("riwayatList");
+  if(!el)return;
+  el.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:10px">Memuat...</div>';
+  const today=new Date().toISOString().slice(0,10);
+  const KAT_C={PEMASUKAN:"#C9A84C",BAHAN_BAR:"#2D9D9D",BAHAN_KITCHEN:"#3DAD8D",GAJI:"#E07B54",OPERASIONAL:"#7B5EA7",LAIN_LAIN:"#808080"};
+  try{
+    const data=await sbGet("jurnal_harian","select=*&order=created_at.desc&tanggal=eq."+today+"&limit=30");
+    if(!data||!data.length){el.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:20px">Belum ada transaksi hari ini</div>';return;}
+    el.innerHTML=data.map(r=>`<div class="ritem"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.keterangan}</div><div style="font-size:10px;color:#7AADAD;margin-top:2px">${r.no_trx||""} · <span style="color:${KAT_C[r.kategori]||"#7AADAD"}">${(r.kategori||"").replace(/_/g," ")}</span></div></div><div style="text-align:right;flex-shrink:0;margin-left:10px">${r.debit>0?`<div style="color:#C9A84C;font-weight:700;font-size:12px">+Rp ${r.debit.toLocaleString("id-ID")}</div>`:""}${r.kredit>0?`<div style="color:#E07B54;font-weight:700;font-size:12px">-Rp ${r.kredit.toLocaleString("id-ID")}</div>`:""}</div></div>`).join("");
+  }catch(e){el.innerHTML='<div style="color:#FF6B6B;font-size:12px;padding:10px">❌ '+e.message+'</div>';}
+}
+
+// Auto-load promo list when promo section active
+const origSwitchSec = switchSec;
 </script>
 </body>
 </html>

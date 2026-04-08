@@ -14,71 +14,61 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 th{background:#1A3A3A;color:#7AADAD;padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;position:sticky;top:0}
 td{padding:9px 10px;border-bottom:1px solid #1A3A3A33;vertical-align:middle}
 .badge{padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;display:inline-block}
-.tab{border:none;cursor:pointer;font-weight:700;border-radius:8px;padding:8px 14px;font-size:12px;margin:3px}
-.btn{border:none;cursor:pointer;font-weight:700;border-radius:8px;padding:8px 14px;font-size:13px;display:inline-flex;align-items:center;gap:5px}
+.tab{border:none;cursor:pointer;font-weight:700;border-radius:8px;padding:8px 14px;font-size:12px;margin:3px;white-space:nowrap}
+.btn{border:none;cursor:pointer;font-weight:700;border-radius:8px;padding:8px 14px;font-size:12px;display:inline-flex;align-items:center;gap:5px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
 .bar-wrap{display:flex;align-items:flex-end;gap:3px;height:90px;margin-top:8px}
 .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%}
 .bar-lbl{font-size:7px;color:#7AADAD;text-align:center;line-height:1.1;word-break:break-all}
 .bar-fill{width:100%;border-radius:3px 3px 0 0;min-height:3px}
 .hidden{display:none}
+.section{display:none}
+.section.active{display:block}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-thumb{background:#2D5555}
 #loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:14px}
-#app{display:none;padding:12px}
+#app{display:none;padding:12px;max-width:900px;margin:0 auto}
+@media print{
+  .no-print{display:none!important}
+  body{background:#fff;color:#000}
+  .card{border:1px solid #ccc}
+}
 </style>
 </head>
 <body>
-
-<!-- LOADING -->
 <div id="loading">
   <div style="font-size:48px" class="spin">☕</div>
-  <div style="color:#C9A84C;font-size:20px;font-weight:700">Cleco Pii</div>
+  <div style="color:#C9A84C;font-size:20px;font-weight:700">Cleco Pii Dashboard</div>
   <div style="color:#7AADAD;font-size:13px" id="loadMsg">Menghubungkan ke database...</div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <!-- HEADER -->
-  <div style="background:#0A2525;border-bottom:1px solid #1A5F5F44;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-12px -12px 12px -12px">
+  <div class="no-print" style="background:#0A2525;border-bottom:1px solid #1A5F5F44;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-12px -12px 12px -12px">
     <div style="display:flex;align-items:center;gap:8px">
       <span style="font-size:22px">☕</span>
       <div>
-        <div style="font-size:17px;font-weight:900;color:#C9A84C">Cleco Pii</div>
+        <div style="font-size:16px;font-weight:900;color:#C9A84C;line-height:1">Cleco Pii</div>
         <div style="font-size:8px;color:#7AADAD;letter-spacing:.08em">LIVE FINANCIAL DASHBOARD</div>
       </div>
     </div>
-    <div style="display:flex;gap:6px;align-items:center">
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
       <span id="liveTag" style="color:#4CAF50;font-size:10px;font-weight:700;display:none">● LIVE</span>
-      <span id="errTag" style="color:#FF6B6B;font-size:10px;display:none">● Error</span>
       <span id="updTag" style="font-size:9px;color:#4A7A7A"></span>
-      <button class="btn" onclick="loadAll()" style="background:#1A3A3A;color:#C9A84C;padding:6px 10px;font-size:12px">↻</button>
+      <button class="btn no-print" onclick="loadAll()" style="background:#1A3A3A;color:#C9A84C;padding:6px 10px;font-size:11px">↻</button>
+      <a href="input.html" class="btn no-print" style="background:#C9A84C33;color:#C9A84C;text-decoration:none;padding:6px 10px;font-size:11px">✏️ Input</a>
     </div>
   </div>
 
-  <!-- ERROR BAR -->
   <div id="errBar" style="display:none;background:#3A1A1A;color:#FF6B6B;padding:8px 12px;font-size:11px;border-radius:8px;margin-bottom:10px"></div>
 
-  <!-- CARDS -->
+  <!-- SUMMARY CARDS -->
   <div class="grid2" style="margin-bottom:10px">
-    <div class="card" style="padding:12px">
-      <div style="font-size:9px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Pemasukan</div>
-      <div id="cMasuk" style="font-size:15px;font-weight:700;color:#C9A84C">—</div>
-      <div id="cMasukSub" style="font-size:9px;color:#4A7A7A;margin-top:2px"></div>
-    </div>
-    <div class="card" style="padding:12px">
-      <div style="font-size:9px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Pengeluaran</div>
-      <div id="cKeluar" style="font-size:15px;font-weight:700;color:#E07B54">—</div>
-      <div id="cKeluarSub" style="font-size:9px;color:#4A7A7A;margin-top:2px"></div>
-    </div>
-    <div class="card" style="padding:12px">
-      <div style="font-size:9px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Net Cash</div>
-      <div id="cNet" style="font-size:15px;font-weight:700">—</div>
-    </div>
-    <div class="card" style="padding:12px">
-      <div style="font-size:9px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Karyawan</div>
-      <div id="cKary" style="font-size:15px;font-weight:700;color:#2D9DAD">—</div>
-    </div>
+    <div class="card" style="padding:12px"><div style="font-size:9px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">📈 Pemasukan</div><div id="cMasuk" style="font-size:15px;font-weight:700;color:#C9A84C">—</div><div id="cMasukSub" style="font-size:9px;color:#4A7A7A;margin-top:2px"></div></div>
+    <div class="card" style="padding:12px"><div style="font-size:9px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">📉 Pengeluaran</div><div id="cKeluar" style="font-size:15px;font-weight:700;color:#E07B54">—</div><div id="cKeluarSub" style="font-size:9px;color:#4A7A7A;margin-top:2px"></div></div>
+    <div class="card" style="padding:12px"><div style="font-size:9px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">💰 Net Cash</div><div id="cNet" style="font-size:15px;font-weight:700">—</div></div>
+    <div class="card" style="padding:12px"><div style="font-size:9px;color:#7AADAD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">👥 Karyawan</div><div id="cKary" style="font-size:15px;font-weight:700;color:#2D9DAD">—</div></div>
   </div>
 
   <!-- BEP -->
@@ -96,85 +86,73 @@ td{padding:9px 10px;border-bottom:1px solid #1A3A3A33;vertical-align:middle}
     </div>
   </div>
 
-  <!-- CHART KATEGORI -->
+  <!-- CHARTS -->
   <div class="grid2">
-    <div class="card">
-      <div style="font-size:11px;color:#C9A84C;font-weight:700;margin-bottom:4px">📊 Kategori</div>
-      <div class="bar-wrap" id="chartKat"></div>
-    </div>
-    <div class="card">
-      <div style="font-size:11px;color:#C9A84C;font-weight:700;margin-bottom:4px">📈 Tren Harian</div>
-      <svg id="chartLine" viewBox="0 0 200 80" style="width:100%;height:80px;margin-top:4px"></svg>
-    </div>
+    <div class="card"><div style="font-size:11px;color:#C9A84C;font-weight:700;margin-bottom:4px">📊 Kategori</div><div class="bar-wrap" id="chartKat"></div></div>
+    <div class="card"><div style="font-size:11px;color:#C9A84C;font-weight:700;margin-bottom:4px">📈 Tren Harian</div><svg id="chartLine" viewBox="0 0 200 80" style="width:100%;height:80px;margin-top:4px"></svg></div>
   </div>
 
   <!-- OPEX -->
-  <div class="card" id="opexSection">
-    <div style="font-size:12px;color:#C9A84C;font-weight:700;margin-bottom:8px">⚙️ OPEX vs Anggaran</div>
-    <div id="opexGrid" class="grid2" style="gap:6px"></div>
-  </div>
+  <div class="card"><div style="font-size:12px;color:#C9A84C;font-weight:700;margin-bottom:8px">⚙️ OPEX vs Anggaran</div><div id="opexGrid" class="grid2" style="gap:6px"></div></div>
+
+  <!-- PROMO AKTIF -->
+  <div class="card"><div style="font-size:12px;color:#C9A84C;font-weight:700;margin-bottom:8px">🎯 Promo Aktif</div><div id="promoCards" class="grid2" style="gap:6px"></div></div>
 
   <!-- TABS -->
-  <div style="margin:10px 0 8px">
-    <button class="tab" id="t1" onclick="switchTab('jurnal')" style="background:linear-gradient(135deg,#C9A84C,#E8C96D);color:#071E1E">📒 Jurnal</button>
-    <button class="tab" id="t2" onclick="switchTab('karyawan')" style="background:#1A3A3A;color:#7AADAD">👥 Karyawan</button>
-    <button class="tab" id="t3" onclick="switchTab('stok_bar')" style="background:#1A3A3A;color:#7AADAD">☕ Stok Bar</button>
-    <button class="tab" id="t4" onclick="switchTab('stok_kit')" style="background:#1A3A3A;color:#7AADAD">🍳 Kitchen</button>
+  <div class="no-print" style="margin:10px 0 8px;overflow-x:auto;white-space:nowrap;padding-bottom:4px">
+    <button class="tab" id="t1" onclick="switchTab(1)" style="background:linear-gradient(135deg,#C9A84C,#E8C96D);color:#071E1E">📒 Jurnal</button>
+    <button class="tab" id="t2" onclick="switchTab(2)" style="background:#1A3A3A;color:#7AADAD">👥 Karyawan</button>
+    <button class="tab" id="t3" onclick="switchTab(3)" style="background:#1A3A3A;color:#7AADAD">☕ Stok Bar</button>
+    <button class="tab" id="t4" onclick="switchTab(4)" style="background:#1A3A3A;color:#7AADAD">🍳 Kitchen</button>
+    <button class="tab" id="t5" onclick="switchTab(5)" style="background:#1A3A3A;color:#7AADAD">📲 Konten</button>
+    <button class="tab" id="t6" onclick="switchTab(6)" style="background:#1A3A3A;color:#7AADAD">🎯 Promo</button>
+  </div>
+
+  <!-- EXPORT BUTTONS (owner only, always visible) -->
+  <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap" class="no-print">
+    <button class="btn" onclick="exportCSV()" style="background:#1A4A2A;color:#4CAF50;font-size:11px">📊 Export Excel/CSV</button>
+    <button class="btn" onclick="exportPDF()" style="background:#1A2A4A;color:#5496E0;font-size:11px">📄 Export PDF</button>
+    <button class="btn" onclick="window.print()" style="background:#2A1A3A;color:#7B5EA7;font-size:11px">🖨️ Print</button>
   </div>
 
   <!-- TABLE JURNAL -->
-  <div id="tabJurnal" class="card" style="padding:0;overflow:hidden">
-    <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A;display:flex;justify-content:space-between">
-      <b style="color:#C9A84C;font-size:13px">📒 Jurnal Harian</b>
-      <span id="jCount" style="color:#7AADAD;font-size:11px"></span>
-    </div>
-    <div style="overflow-x:auto;max-height:360px;overflow-y:auto">
-      <table><thead><tr>
-        <th>Tgl</th><th>Keterangan</th><th>Kategori</th>
-        <th style="text-align:right">Debit</th><th style="text-align:right">Kredit</th>
-      </tr></thead>
-      <tbody id="jBody"></tbody></table>
-    </div>
+  <div id="sec1" class="section active card" style="padding:0;overflow:hidden">
+    <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A;display:flex;justify-content:space-between"><b style="color:#C9A84C;font-size:13px">📒 Jurnal Harian</b><span id="jCount" style="color:#7AADAD;font-size:11px"></span></div>
+    <div style="overflow-x:auto;max-height:360px;overflow-y:auto"><table><thead><tr><th>Tgl</th><th>Keterangan</th><th>Kategori</th><th style="text-align:right">Debit</th><th style="text-align:right">Kredit</th></tr></thead><tbody id="jBody"></tbody></table></div>
   </div>
 
   <!-- TABLE KARYAWAN -->
-  <div id="tabKaryawan" class="card hidden" style="padding:0;overflow:hidden">
+  <div id="sec2" class="section card" style="padding:0;overflow:hidden">
     <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A"><b style="color:#C9A84C">👥 Karyawan & Gaji</b></div>
-    <div style="overflow-x:auto">
-      <table><thead><tr>
-        <th>Nama</th><th>Jabatan</th><th>Status</th>
-        <th style="text-align:right">Gaji Pokok</th><th style="text-align:right">Net Gaji</th>
-      </tr></thead>
-      <tbody id="kBody"></tbody></table>
-    </div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Nama</th><th>Jabatan</th><th>Status</th><th style="text-align:right">Gaji Pokok</th><th style="text-align:right">Uang Makan</th><th style="text-align:right">Net Gaji</th></tr></thead><tbody id="kBody"></tbody></table></div>
   </div>
 
-  <!-- TABLE STOK BAR -->
-  <div id="tabStokBar" class="card hidden" style="padding:0;overflow:hidden">
-    <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A;display:flex;justify-content:space-between">
-      <b style="color:#C9A84C">☕ Stok Bahan Bar</b>
-      <span id="sbCount" style="color:#7AADAD;font-size:11px"></span>
-    </div>
-    <div style="overflow-x:auto;max-height:360px;overflow-y:auto">
-      <table><thead><tr><th>Nama</th><th>Satuan</th><th style="text-align:right">Sisa</th><th>Status</th></tr></thead>
-      <tbody id="sbBody"></tbody></table>
-    </div>
+  <!-- STOK BAR -->
+  <div id="sec3" class="section card" style="padding:0;overflow:hidden">
+    <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A;display:flex;justify-content:space-between"><b style="color:#C9A84C">☕ Stok Bahan Bar</b><span id="sbCount" style="color:#7AADAD;font-size:11px"></span></div>
+    <div style="overflow-x:auto;max-height:360px;overflow-y:auto"><table><thead><tr><th>Nama</th><th>Satuan</th><th style="text-align:right">Awal</th><th style="text-align:right">Masuk</th><th style="text-align:right">Keluar</th><th style="text-align:right">Sisa</th><th>Status</th></tr></thead><tbody id="sbBody"></tbody></table></div>
   </div>
 
-  <!-- TABLE STOK KITCHEN -->
-  <div id="tabStokKit" class="card hidden" style="padding:0;overflow:hidden">
-    <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A;display:flex;justify-content:space-between">
-      <b style="color:#C9A84C">🍳 Stok Bahan Kitchen</b>
-      <span id="skCount" style="color:#7AADAD;font-size:11px"></span>
-    </div>
-    <div style="overflow-x:auto;max-height:360px;overflow-y:auto">
-      <table><thead><tr><th>Nama</th><th>Satuan</th><th style="text-align:right">Sisa</th><th>Status</th></tr></thead>
-      <tbody id="skBody"></tbody></table>
-    </div>
+  <!-- STOK KITCHEN -->
+  <div id="sec4" class="section card" style="padding:0;overflow:hidden">
+    <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A;display:flex;justify-content:space-between"><b style="color:#C9A84C">🍳 Stok Kitchen</b><span id="skCount" style="color:#7AADAD;font-size:11px"></span></div>
+    <div style="overflow-x:auto;max-height:360px;overflow-y:auto"><table><thead><tr><th>Nama</th><th>Satuan</th><th style="text-align:right">Awal</th><th style="text-align:right">Masuk</th><th style="text-align:right">Keluar</th><th style="text-align:right">Sisa</th><th>Status</th></tr></thead><tbody id="skBody"></tbody></table></div>
+  </div>
+
+  <!-- KONTEN -->
+  <div id="sec5" class="section card" style="padding:0;overflow:hidden">
+    <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A;display:flex;justify-content:space-between"><b style="color:#C9A84C">📲 Monitoring Konten</b><span id="kontenCount" style="color:#7AADAD;font-size:11px"></span></div>
+    <div style="overflow-x:auto;max-height:360px;overflow-y:auto"><table><thead><tr><th>Tgl</th><th>Platform</th><th>Judul</th><th>Jenis</th><th style="text-align:right">Views</th><th style="text-align:right">Likes</th><th>Status</th></tr></thead><tbody id="kontenBody"></tbody></table></div>
+  </div>
+
+  <!-- PROMO -->
+  <div id="sec6" class="section card" style="padding:0;overflow:hidden">
+    <div style="padding:10px 12px;border-bottom:1px solid #1A3A3A;display:flex;justify-content:space-between"><b style="color:#C9A84C">🎯 Data Promo</b><span id="promoCount" style="color:#7AADAD;font-size:11px"></span></div>
+    <div style="overflow-x:auto;max-height:360px;overflow-y:auto"><table><thead><tr><th>Nama Promo</th><th>Periode</th><th>Diskon</th><th>Syarat</th><th>Status</th></tr></thead><tbody id="promoBody"></tbody></table></div>
   </div>
 
   <div style="text-align:center;padding:16px 0 8px;font-size:9px;color:#4A7A7A;border-top:1px solid #1A3A3A;margin-top:10px">
-    Cleco Pii Coffee & Eatery · Beji, Depok · @cleco.pii
+    Cleco Pii Coffee & Eatery · Beji, Depok · @cleco.pii | <span id="footerUpd"></span>
   </div>
 </div>
 
@@ -182,188 +160,201 @@ td{padding:9px 10px;border-bottom:1px solid #1A3A3A33;vertical-align:middle}
 const SB  = "https://rpogymhoemcwrjhollzq.supabase.co/rest/v1";
 const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwb2d5bWhvZW1jd3JqaG9sbHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Mzk3NjAsImV4cCI6MjA5MTExNTc2MH0.PjVc8OMpEZfLV2kils5obeYmILNHH0MpQ5sTs8QmV5w";
 const BEP = 20833100;
-const H   = {apikey:KEY, Authorization:"Bearer "+KEY};
+const H   = {apikey:KEY,Authorization:"Bearer "+KEY};
+const KAT_C = {PEMASUKAN:"#C9A84C",BAHAN_BAR:"#2D9D9D",BAHAN_KITCHEN:"#3DAD8D",GAJI:"#E07B54",OPERASIONAL:"#7B5EA7",LISTRIK:"#5496E0",KEAMANAN:"#A07060",SEWA:"#E05454",LAIN_LAIN:"#808080"};
+const fRp = v=>(!v&&v!==0)?"—":"Rp "+Number(v).toLocaleString("id-ID");
 
-const KAT_COLOR = {
-  PEMASUKAN:"#C9A84C",BAHAN_BAR:"#2D9D9D",BAHAN_KITCHEN:"#3DAD8D",
-  GAJI:"#E07B54",OPERASIONAL:"#7B5EA7",LISTRIK:"#5496E0",
-  KEAMANAN:"#A07060",SEWA:"#E05454",INTERNET:"#54C1E0",LAIN_LAIN:"#808080"
-};
-
-const fRp = v => (!v&&v!==0)?"—":"Rp "+Number(v).toLocaleString("id-ID");
-
-async function sbFetch(table, params="") {
-  const r = await fetch(`${SB}/${table}?${params}`, {headers:H});
-  if(!r.ok) { const e=await r.json(); throw new Error(e.message||"Error "+r.status); }
+async function sbGet(table,params=""){
+  const r=await fetch(`${SB}/${table}?${params}`,{headers:H});
   return r.json();
 }
 
-let DATA = {jurnal:[],karyawan:[],gaji:[],stok:[],opex:[]};
+let DATA={jurnal:[],karyawan:[],gaji:[],stok:[],opex:[],konten:[],promo:[]};
 
-async function loadAll() {
-  document.getElementById("loadMsg").textContent = "Memuat data...";
-  try {
-    const [j,k,g,s,o] = await Promise.all([
-      sbFetch("jurnal_harian","select=*&order=tanggal.desc&limit=300"),
-      sbFetch("karyawan","select=*&order=nama"),
-      sbFetch("gaji","select=*&order=periode.desc"),
-      sbFetch("stok_bahan","select=*&order=kategori,nama_bahan"),
-      sbFetch("opex","select=*&order=kategori"),
+async function loadAll(){
+  document.getElementById("loadMsg").textContent="Memuat data...";
+  try{
+    const [j,k,g,s,o,kn,pr]=await Promise.all([
+      sbGet("jurnal_harian","select=*&order=tanggal.desc&limit=300"),
+      sbGet("karyawan","select=*&order=nama"),
+      sbGet("gaji","select=*&order=periode.desc"),
+      sbGet("stok_bahan","select=*&order=kategori,nama_bahan"),
+      sbGet("opex","select=*&order=kategori"),
+      sbGet("monitoring_konten","select=*&order=tanggal.desc&limit=50"),
+      sbGet("promo","select=*&order=tgl_mulai.desc"),
     ]);
-    DATA = {jurnal:j,karyawan:k,gaji:g,stok:s,opex:o};
+    DATA={jurnal:j,karyawan:k,gaji:g,stok:s,opex:o,konten:Array.isArray(kn)?kn:[],promo:Array.isArray(pr)?pr:[]};
     renderAll();
     document.getElementById("liveTag").style.display="inline";
-    document.getElementById("errTag").style.display="none";
+    const t=new Date().toLocaleTimeString("id-ID");
+    document.getElementById("updTag").textContent=t;
+    document.getElementById("footerUpd").textContent="Update: "+t;
+    document.getElementById("loading").style.display="none";
+    document.getElementById("app").style.display="block";
     document.getElementById("errBar").style.display="none";
-    document.getElementById("updTag").textContent = new Date().toLocaleTimeString("id-ID");
-    document.getElementById("loading").style.display="none";
-    document.getElementById("app").style.display="block";
-  } catch(e) {
-    document.getElementById("loadMsg").textContent = "❌ Error: "+e.message;
-    document.getElementById("errBar").textContent = "⚠️ "+e.message;
+  }catch(e){
+    document.getElementById("loadMsg").textContent="❌ "+e.message;
+    document.getElementById("errBar").textContent="⚠️ "+e.message;
     document.getElementById("errBar").style.display="block";
-    document.getElementById("errTag").style.display="inline";
-    document.getElementById("liveTag").style.display="none";
     document.getElementById("loading").style.display="none";
     document.getElementById("app").style.display="block";
-    console.error(e);
   }
 }
 
-function renderAll() {
-  const {jurnal,karyawan,gaji,stok,opex} = DATA;
-  const masuk  = jurnal.filter(j=>j.kategori==="PEMASUKAN").reduce((s,j)=>s+(j.debit||0),0);
-  const keluar = jurnal.filter(j=>j.kategori!=="PEMASUKAN").reduce((s,j)=>s+(j.kredit||0),0);
-  const net    = masuk-keluar;
-  const aktif  = karyawan.filter(k=>k.status==="aktif").length;
-  const pct    = Math.min(Math.round(masuk/BEP*100),100);
+function renderAll(){
+  const {jurnal,karyawan,gaji,stok,opex,konten,promo}=DATA;
+  const masuk=jurnal.filter(j=>j.kategori==="PEMASUKAN").reduce((s,j)=>s+(j.debit||0),0);
+  const keluar=jurnal.filter(j=>j.kategori!=="PEMASUKAN").reduce((s,j)=>s+(j.kredit||0),0);
+  const net=masuk-keluar;
+  const aktif=karyawan.filter(k=>k.status==="aktif").length;
+  const pct=Math.min(Math.round(masuk/BEP*100),100);
 
-  // Cards
-  document.getElementById("cMasuk").textContent = fRp(masuk);
-  document.getElementById("cMasukSub").textContent = jurnal.filter(j=>j.kategori==="PEMASUKAN").length+" transaksi";
-  document.getElementById("cKeluar").textContent = fRp(keluar);
-  document.getElementById("cKeluarSub").textContent = jurnal.filter(j=>j.kategori!=="PEMASUKAN").length+" transaksi";
-  const netEl = document.getElementById("cNet");
-  netEl.textContent = fRp(net);
-  netEl.style.color = net>=0?"#4CAF50":"#FF6B6B";
-  document.getElementById("cKary").textContent = aktif+" aktif";
+  document.getElementById("cMasuk").textContent=fRp(masuk);
+  document.getElementById("cMasukSub").textContent=jurnal.filter(j=>j.kategori==="PEMASUKAN").length+" transaksi";
+  document.getElementById("cKeluar").textContent=fRp(keluar);
+  document.getElementById("cKeluarSub").textContent=jurnal.filter(j=>j.kategori!=="PEMASUKAN").length+" transaksi";
+  const ne=document.getElementById("cNet");ne.textContent=fRp(net);ne.style.color=net>=0?"#4CAF50":"#FF6B6B";
+  document.getElementById("cKary").textContent=aktif+" aktif";
+  document.getElementById("bepPct").textContent=pct+"%";
+  document.getElementById("bepBar").style.width=pct+"%";
+  document.getElementById("bepTercapai").textContent="Tercapai: "+fRp(masuk);
+  document.getElementById("bepSisa").textContent="Sisa: "+fRp(Math.max(0,BEP-masuk));
 
-  // BEP
-  document.getElementById("bepPct").textContent = pct+"%";
-  document.getElementById("bepBar").style.width = pct+"%";
-  document.getElementById("bepBar").style.background = pct>=100?"#4CAF50":"linear-gradient(90deg,#2D7D7D,#C9A84C)";
-  document.getElementById("bepTercapai").textContent = "Tercapai: "+fRp(masuk);
-  document.getElementById("bepSisa").textContent = "Sisa: "+fRp(Math.max(0,BEP-masuk));
+  // Chart Kat
+  const ka={};jurnal.forEach(j=>{ka[j.kategori]=(ka[j.kategori]||0)+(j.kategori==="PEMASUKAN"?(j.debit||0):(j.kredit||0));});
+  const karr=Object.entries(ka).map(([k,v])=>({k,v})).filter(d=>d.v>0).sort((a,b)=>b.v-a.v).slice(0,7);
+  const maxK=Math.max(...karr.map(d=>d.v),1);
+  document.getElementById("chartKat").innerHTML=karr.map(d=>`<div class="bar-col"><div style="flex:1;display:flex;align-items:flex-end;width:100%"><div class="bar-fill" style="height:${d.v/maxK*100}%;background:${KAT_C[d.k]||"#2D7D7D"}"></div></div><span class="bar-lbl">${d.k.replace(/_/g," ").split(" ")[0]}</span></div>`).join("");
 
-  // Chart Kategori
-  const katAcc = {};
-  jurnal.forEach(j=>{ katAcc[j.kategori]=(katAcc[j.kategori]||0)+(j.kategori==="PEMASUKAN"?(j.debit||0):(j.kredit||0)); });
-  const katArr = Object.entries(katAcc).map(([k,v])=>({k,v})).filter(d=>d.v>0).sort((a,b)=>b.v-a.v).slice(0,7);
-  const maxKat = Math.max(...katArr.map(d=>d.v),1);
-  const katDiv = document.getElementById("chartKat");
-  katDiv.innerHTML = katArr.map(d=>`
-    <div class="bar-col">
-      <div style="flex:1;display:flex;align-items:flex-end;width:100%">
-        <div class="bar-fill" style="height:${d.v/maxKat*100}%;background:${KAT_COLOR[d.k]||"#2D7D7D"}"></div>
-      </div>
-      <span class="bar-lbl">${d.k.replace(/_/g," ").split(" ")[0]}</span>
-    </div>`).join("");
-
-  // Chart Line (SVG)
-  const dailyAcc = {};
-  jurnal.filter(j=>j.kategori==="PEMASUKAN").forEach(j=>{ dailyAcc[j.tanggal]=(dailyAcc[j.tanggal]||0)+(j.debit||0); });
-  const dailyArr = Object.entries(dailyAcc).map(([t,v])=>({t,v})).sort((a,b)=>a.t.localeCompare(b.t));
-  const svg = document.getElementById("chartLine");
-  if(dailyArr.length>=2) {
-    const maxD=Math.max(...dailyArr.map(d=>d.v),1), W=200, H=78, P=6;
-    const pts = dailyArr.map((d,i)=>({
-      x:P+(i/(dailyArr.length-1))*(W-P*2),
-      y:H-P-(d.v/maxD)*(H-P*2)
-    }));
-    const pl = pts.map(p=>p.x+","+p.y).join(" ");
-    const area = `M${pts[0].x},${H} `+pts.map(p=>`${p.x},${p.y}`).join(" L")+` L${pts[pts.length-1].x},${H} Z`;
-    svg.innerHTML = `
-      <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.4"/>
-        <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
-      </linearGradient></defs>
-      <path d="${area}" fill="url(#g1)"/>
-      <polyline points="${pl}" fill="none" stroke="#C9A84C" stroke-width="2"/>
-      ${pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="#C9A84C"/>`).join("")}`;
-  } else { svg.innerHTML = '<text x="100" y="40" text-anchor="middle" fill="#7AADAD" font-size="10">Data belum cukup</text>'; }
+  // SVG Line
+  const da={};jurnal.filter(j=>j.kategori==="PEMASUKAN").forEach(j=>{da[j.tanggal]=(da[j.tanggal]||0)+(j.debit||0);});
+  const darr=Object.entries(da).map(([t,v])=>({t,v})).sort((a,b)=>a.t.localeCompare(b.t));
+  const svg=document.getElementById("chartLine");
+  if(darr.length>=2){
+    const mx=Math.max(...darr.map(d=>d.v),1),W=200,H=78,P=6;
+    const pts=darr.map((d,i)=>({x:P+(i/(darr.length-1))*(W-P*2),y:H-P-(d.v/mx)*(H-P*2)}));
+    svg.innerHTML=`<defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9A84C" stop-opacity="0.4"/><stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/></linearGradient></defs><path d="M${pts[0].x},${H} ${pts.map(p=>p.x+","+p.y).join(" L")} L${pts[pts.length-1].x},${H} Z" fill="url(#g1)"/><polyline points="${pts.map(p=>p.x+","+p.y).join(" ")}" fill="none" stroke="#C9A84C" stroke-width="2"/>${pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="#C9A84C"/>`).join("")}`;
+  }else{svg.innerHTML='<text x="100" y="40" text-anchor="middle" fill="#7AADAD" font-size="10">Data belum cukup</text>';}
 
   // OPEX
-  if(opex.length>0) {
-    document.getElementById("opexGrid").innerHTML = opex.map(o=>{
-      const pct=o.anggaran>0?Math.round(o.aktual/o.anggaran*100):0;
-      const over=o.aktual>o.anggaran;
-      return `<div style="background:#1A3A3A;border-radius:8px;padding:10px">
-        <div style="font-size:9px;color:#7AADAD;text-transform:uppercase;margin-bottom:3px">${o.kategori}</div>
-        <div style="font-size:12px;font-weight:700;color:${over?"#FF6B6B":"#E8F4F4"}">${fRp(o.aktual)}</div>
-        <div style="font-size:9px;color:#4A7A7A;margin:2px 0">dari ${fRp(o.anggaran)}</div>
-        <div style="height:3px;background:#0F2E2E;border-radius:2px;overflow:hidden">
-          <div style="height:100%;width:${Math.min(pct,100)}%;background:${over?"#FF6B6B":"#C9A84C"};border-radius:2px"></div>
-        </div>
-        <div style="font-size:9px;color:${over?"#FF6B6B":"#4CAF50"};font-weight:700;margin-top:3px">${over?"⚠️ Over":"✅ OK"} ${pct}%</div>
-      </div>`;
-    }).join("");
-  }
+  document.getElementById("opexGrid").innerHTML=opex.map(o=>{const p=o.anggaran>0?Math.round(o.aktual/o.anggaran*100):0;const ov=o.aktual>o.anggaran;return`<div style="background:#1A3A3A;border-radius:8px;padding:10px"><div style="font-size:9px;color:#7AADAD;text-transform:uppercase;margin-bottom:3px">${o.kategori}</div><div style="font-size:12px;font-weight:700;color:${ov?"#FF6B6B":"#E8F4F4"}">${fRp(o.aktual)}</div><div style="font-size:9px;color:#4A7A7A;margin:2px 0">dari ${fRp(o.anggaran)}</div><div style="height:3px;background:#0F2E2E;border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(p,100)}%;background:${ov?"#FF6B6B":"#C9A84C"};border-radius:2px"></div></div><div style="font-size:9px;color:${ov?"#FF6B6B":"#4CAF50"};font-weight:700;margin-top:3px">${ov?"⚠️ Over":"✅ OK"} ${p}%</div></div>`;}).join("");
 
-  // Jurnal table
-  document.getElementById("jCount").textContent = jurnal.length+" transaksi";
-  document.getElementById("jBody").innerHTML = jurnal.map(r=>`<tr>
-    <td style="color:#7AADAD;white-space:nowrap;font-size:11px">${(r.tanggal||"").slice(5)}</td>
-    <td style="font-weight:500;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.keterangan||""}</td>
-    <td><span class="badge" style="background:${(KAT_COLOR[r.kategori]||"#2D7D7D")}22;color:${KAT_COLOR[r.kategori]||"#2D7D7D"};font-size:9px">${(r.kategori||"").replace(/_/g," ")}</span></td>
-    <td style="text-align:right;color:#C9A84C;font-weight:${r.debit>0?700:400};white-space:nowrap">${r.debit>0?fRp(r.debit):"—"}</td>
-    <td style="text-align:right;color:#E07B54;font-weight:${r.kredit>0?700:400};white-space:nowrap">${r.kredit>0?fRp(r.kredit):"—"}</td>
-  </tr>`).join("");
+  // PROMO CARDS (aktif)
+  const promoAktif=promo.filter(p=>p.status==="Aktif");
+  document.getElementById("promoCards").innerHTML=promoAktif.length?promoAktif.map(p=>`<div style="background:#1A3A3A;border-radius:8px;padding:10px;border-left:3px solid #C9A84C"><div style="font-size:11px;font-weight:700;color:#C9A84C;margin-bottom:4px">${p.nama_promo}</div><div style="font-size:10px;color:#7AADAD;margin-bottom:3px">📅 ${p.tgl_mulai||""} ${p.tgl_selesai?"→ "+p.tgl_selesai:""}</div><div style="font-size:10px;color:#E8C96D">🏷️ ${p.diskon||"-"}</div>${p.syarat?`<div style="font-size:9px;color:#4A7A7A;margin-top:3px">${p.syarat}</div>`:""}</div>`).join(""):'<div style="color:#7AADAD;font-size:11px;padding:8px">Tidak ada promo aktif</div>';
 
-  // Karyawan table
-  const gajiRows = karyawan.map(k=>({...k,...(gaji.find(g=>g.karyawan_id===k.id)||{})}));
-  document.getElementById("kBody").innerHTML = gajiRows.map(r=>`<tr>
-    <td style="font-weight:700">${r.nama}</td>
-    <td style="color:#7AADAD;font-size:11px">${r.jabatan}</td>
-    <td><span class="badge" style="${r.status==="aktif"?"background:#1A4A2A;color:#4CAF50":"background:#3A1A1A;color:#FF6B6B"}">${r.status}</span></td>
-    <td style="text-align:right">${fRp(r.gaji_pokok)}</td>
-    <td style="text-align:right;color:#C9A84C;font-weight:700">${fRp(r.net_gaji)}</td>
-  </tr>`).join("") + `<tr style="background:#1A3A3A">
-    <td colspan="3" style="font-weight:700;color:#C9A84C">TOTAL NET GAJI</td>
-    <td></td>
-    <td style="text-align:right;color:#C9A84C;font-weight:700">${fRp(gajiRows.reduce((s,r)=>s+(r.net_gaji||0),0))}</td>
-  </tr>`;
+  // JURNAL
+  document.getElementById("jCount").textContent=jurnal.length+" transaksi";
+  document.getElementById("jBody").innerHTML=jurnal.map(r=>`<tr><td style="color:#7AADAD;white-space:nowrap;font-size:11px">${(r.tanggal||"").slice(5)}</td><td style="font-weight:500;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.keterangan||""}</td><td><span class="badge" style="background:${(KAT_C[r.kategori]||"#2D7D7D")}22;color:${KAT_C[r.kategori]||"#2D7D7D"};font-size:9px">${(r.kategori||"").replace(/_/g," ")}</span></td><td style="text-align:right;color:#C9A84C;font-weight:${r.debit>0?700:400};white-space:nowrap">${r.debit>0?fRp(r.debit):"—"}</td><td style="text-align:right;color:#E07B54;font-weight:${r.kredit>0?700:400};white-space:nowrap">${r.kredit>0?fRp(r.kredit):"—"}</td></tr>`).join("");
 
-  // Stok
-  const bar = stok.filter(s=>s.kategori==="Bar");
-  const kit = stok.filter(s=>s.kategori==="Kitchen");
-  document.getElementById("sbCount").textContent = bar.length+" item";
-  document.getElementById("skCount").textContent = kit.length+" item";
+  // KARYAWAN
+  const gr=karyawan.map(k=>({...k,...(gaji.find(g=>g.karyawan_id===k.id)||{})}));
+  document.getElementById("kBody").innerHTML=gr.map(r=>`<tr><td style="font-weight:700">${r.nama}</td><td style="color:#7AADAD;font-size:11px">${r.jabatan}</td><td><span class="badge" style="${r.status==="aktif"?"background:#1A4A2A;color:#4CAF50":"background:#3A1A1A;color:#FF6B6B"}">${r.status}</span></td><td style="text-align:right">${fRp(r.gaji_pokok)}</td><td style="text-align:right">${fRp(r.uang_makan)}</td><td style="text-align:right;color:#C9A84C;font-weight:700">${fRp(r.net_gaji)}</td></tr>`).join("")+`<tr style="background:#1A3A3A"><td colspan="4" style="font-weight:700;color:#C9A84C">TOTAL NET GAJI</td><td></td><td style="text-align:right;color:#C9A84C;font-weight:700">${fRp(gr.reduce((s,r)=>s+(r.net_gaji||0),0))}</td></tr>`;
+
+  // STOK
+  const bar=stok.filter(s=>s.kategori==="Bar");
+  const kit=stok.filter(s=>s.kategori==="Kitchen");
+  document.getElementById("sbCount").textContent=bar.length+" item";
+  document.getElementById("skCount").textContent=kit.length+" item";
   [["sbBody",bar],["skBody",kit]].forEach(([id,arr])=>{
-    document.getElementById(id).innerHTML = arr.map(r=>{
-      const low=r.sisa_stok<=0;
-      return `<tr>
-        <td style="font-weight:500">${r.nama_bahan}</td>
-        <td style="color:#7AADAD;font-size:11px">${r.satuan}</td>
-        <td style="text-align:right;font-weight:700;color:${low?"#FF6B6B":"#C9A84C"}">${r.sisa_stok}</td>
-        <td><span class="badge" style="${low?"background:#3A1A1A;color:#FF6B6B":"background:#1A4A2A;color:#4CAF50"}">${low?"⚠️ Habis":"✅ Ada"}</span></td>
-      </tr>`;
-    }).join("");
+    document.getElementById(id).innerHTML=arr.map(r=>{const low=r.sisa_stok<=0;return`<tr><td style="font-weight:500">${r.nama_bahan}</td><td style="color:#7AADAD;font-size:11px">${r.satuan}</td><td style="text-align:right">${r.stok_awal}</td><td style="text-align:right;color:#4CAF50">${r.masuk>0?"+"+r.masuk:"—"}</td><td style="text-align:right;color:#E07B54">${r.keluar>0?"-"+r.keluar:"—"}</td><td style="text-align:right;font-weight:700;color:${low?"#FF6B6B":"#C9A84C"}">${r.sisa_stok}</td><td><span class="badge" style="${low?"background:#3A1A1A;color:#FF6B6B":"background:#1A4A2A;color:#4CAF50"}">${low?"⚠️ Habis":"✅ Ada"}</span></td></tr>`;}).join("");
   });
+
+  // KONTEN
+  document.getElementById("kontenCount").textContent=konten.length+" konten";
+  document.getElementById("kontenBody").innerHTML=konten.map(r=>`<tr><td style="color:#7AADAD;font-size:11px;white-space:nowrap">${(r.tanggal||"").slice(5)}</td><td><span class="badge" style="background:${r.platform==="TikTok"?"#ff0050":"r.platform==="Instagram"?"#E1306C":"#25D366"}22;color:${r.platform==="TikTok"?"#ff0050":r.platform==="Instagram"?"#E1306C":"#25D366"}">${r.platform}</span></td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">${r.judul||""}</td><td style="font-size:10px;color:#7AADAD">${r.jenis||""}</td><td style="text-align:right">${(r.views||0).toLocaleString()}</td><td style="text-align:right;color:#C9A84C">${(r.likes||0).toLocaleString()}</td><td><span class="badge" style="${r.status==="Tayang"?"background:#1A4A2A;color:#4CAF50":r.status==="Draft"?"background:#3A3A1A;color:#E8C96D":"background:#1A3A4A;color:#5496E0"}">${r.status}</span></td></tr>`).join("");
+
+  // PROMO TABLE
+  document.getElementById("promoCount").textContent=promo.length+" promo";
+  document.getElementById("promoBody").innerHTML=promo.map(r=>`<tr><td style="font-weight:600">${r.nama_promo}</td><td style="font-size:11px;color:#7AADAD;white-space:nowrap">${r.tgl_mulai||""} ${r.tgl_selesai?"→"+r.tgl_selesai:""}</td><td style="color:#C9A84C">${r.diskon||"-"}</td><td style="font-size:11px;color:#7AADAD">${r.syarat||"-"}</td><td><span class="badge" style="${r.status==="Aktif"?"background:#1A4A2A;color:#4CAF50":r.status==="Selesai"?"background:#2A2A2A;color:#7AADAD":"background:#3A1A1A;color:#FF6B6B"}">${r.status}</span></td></tr>`).join("");
 }
 
-function switchTab(name) {
-  ["jurnal","karyawan","stok_bar","stok_kit"].forEach((t,i)=>{
-    document.getElementById("tab"+t.charAt(0).toUpperCase()+t.slice(1).replace("_","").replace(/b$/,"B").replace(/k$/,"K")).classList.toggle("hidden", t!==name);
-  });
-  document.getElementById("tabJurnal").classList.toggle("hidden", name!=="jurnal");
-  document.getElementById("tabKaryawan").classList.toggle("hidden", name!=="karyawan");
-  document.getElementById("tabStokBar").classList.toggle("hidden", name!=="stok_bar");
-  document.getElementById("tabStokKit").classList.toggle("hidden", name!=="stok_kit");
-  ["t1","t2","t3","t4"].forEach((id,i)=>{
-    const active = ["jurnal","karyawan","stok_bar","stok_kit"][i]===name;
-    document.getElementById(id).style.background = active?"linear-gradient(135deg,#C9A84C,#E8C96D)":"#1A3A3A";
-    document.getElementById(id).style.color = active?"#071E1E":"#7AADAD";
-  });
+function switchTab(n){
+  for(let i=1;i<=6;i++){
+    document.getElementById("sec"+i).className="section"+(i===n?" active":"");
+    const b=document.getElementById("t"+i);
+    b.style.background=i===n?"linear-gradient(135deg,#C9A84C,#E8C96D)":"#1A3A3A";
+    b.style.color=i===n?"#071E1E":"#7AADAD";
+  }
+}
+
+// ── EXPORT CSV ───────────────────────────────
+function exportCSV(){
+  const {jurnal,karyawan,gaji,stok,opex}=DATA;
+  let csv="LAPORAN KEUANGAN CLECO PII\n";
+  csv+="Periode: "+new Date().toLocaleDateString("id-ID")+"\n\n";
+  csv+="=== JURNAL HARIAN ===\n";
+  csv+="Tanggal,No TRX,Keterangan,Kategori,Debit,Kredit\n";
+  jurnal.forEach(r=>{ csv+=`${r.tanggal},${r.no_trx||""},"${r.keterangan||""}",${r.kategori||""},${r.debit||0},${r.kredit||0}\n`; });
+  csv+="\n=== KARYAWAN & GAJI ===\n";
+  csv+="Nama,Jabatan,Status,Gaji Pokok,Uang Makan,Net Gaji\n";
+  const gr=karyawan.map(k=>({...k,...(gaji.find(g=>g.karyawan_id===k.id)||{})}));
+  gr.forEach(r=>{ csv+=`${r.nama},${r.jabatan},${r.status},${r.gaji_pokok||0},${r.uang_makan||0},${r.net_gaji||0}\n`; });
+  csv+="\n=== STOK BAHAN ===\n";
+  csv+="Nama Bahan,Kategori,Satuan,Stok Awal,Masuk,Keluar,Sisa\n";
+  stok.forEach(r=>{ csv+=`${r.nama_bahan},${r.kategori},${r.satuan},${r.stok_awal},${r.masuk||0},${r.keluar||0},${r.sisa_stok}\n`; });
+  csv+="\n=== OPEX ===\n";
+  csv+="Kategori,Anggaran,Aktual,Selisih\n";
+  opex.forEach(r=>{ csv+=`${r.kategori},${r.anggaran},${r.aktual},${(r.anggaran||0)-(r.aktual||0)}\n`; });
+  const masuk=jurnal.filter(j=>j.kategori==="PEMASUKAN").reduce((s,j)=>s+(j.debit||0),0);
+  const keluar=jurnal.filter(j=>j.kategori!=="PEMASUKAN").reduce((s,j)=>s+(j.kredit||0),0);
+  csv+="\n=== RINGKASAN ===\n";
+  csv+=`Total Pemasukan,${masuk}\nTotal Pengeluaran,${keluar}\nNet Cash Flow,${masuk-keluar}\nBEP Target,20833100\nProgress BEP,${Math.round(masuk/20833100*100)}%\n`;
+  const a=document.createElement("a");
+  a.href="data:text/csv;charset=utf-8,\uFEFF"+encodeURIComponent(csv);
+  a.download="Laporan_ClecoPii_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+}
+
+// ── EXPORT PDF (Print) ───────────────────────
+function exportPDF(){
+  const {jurnal,karyawan,gaji,opex}=DATA;
+  const masuk=jurnal.filter(j=>j.kategori==="PEMASUKAN").reduce((s,j)=>s+(j.debit||0),0);
+  const keluar=jurnal.filter(j=>j.kategori!=="PEMASUKAN").reduce((s,j)=>s+(j.kredit||0),0);
+  const net=masuk-keluar;
+  const pct=Math.min(Math.round(masuk/20833100*100),100);
+  const gr=karyawan.map(k=>({...k,...(gaji.find(g=>g.karyawan_id===k.id)||{})}));
+  const w=window.open("","_blank");
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Laporan Cleco Pii</title>
+  <style>body{font-family:Arial,sans-serif;font-size:12px;color:#000;max-width:800px;margin:0 auto;padding:20px}
+  h1{color:#0D4A4A;border-bottom:3px solid #C9A84C;padding-bottom:8px;margin-bottom:16px}
+  h2{color:#0D4A4A;font-size:14px;margin:20px 0 8px;border-left:4px solid #C9A84C;padding-left:8px}
+  table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:11px}
+  th{background:#0D4A4A;color:#fff;padding:6px 8px;text-align:left}
+  td{padding:5px 8px;border-bottom:1px solid #eee}
+  tr:nth-child(even){background:#f9f9f9}
+  .summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+  .sbox{border:1px solid #ddd;border-radius:6px;padding:10px}
+  .sval{font-size:16px;font-weight:700;color:#0D4A4A}
+  .bar{height:16px;background:#eee;border-radius:4px;overflow:hidden;margin-top:4px}
+  .bar-fill{height:100%;background:linear-gradient(90deg,#2D7D7D,#C9A84C)}
+  @media print{button{display:none}}</style></head><body>
+  <h1>☕ LAPORAN KEUANGAN CLECO PII</h1>
+  <p style="color:#666;margin-bottom:16px">Periode aktif · Dicetak: ${new Date().toLocaleDateString("id-ID",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}</p>
+  <div class="summary">
+    <div class="sbox"><div style="font-size:10px;color:#666;text-transform:uppercase">Total Pemasukan</div><div class="sval">Rp ${masuk.toLocaleString("id-ID")}</div></div>
+    <div class="sbox"><div style="font-size:10px;color:#666;text-transform:uppercase">Total Pengeluaran</div><div class="sval" style="color:#c0392b">Rp ${keluar.toLocaleString("id-ID")}</div></div>
+    <div class="sbox"><div style="font-size:10px;color:#666;text-transform:uppercase">Net Cash Flow</div><div class="sval" style="color:${net>=0?"#27ae60":"#c0392b"}">Rp ${net.toLocaleString("id-ID")}</div></div>
+    <div class="sbox"><div style="font-size:10px;color:#666;text-transform:uppercase">Progress BEP</div><div class="sval">${pct}%</div><div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div></div>
+  </div>
+  <h2>📒 Jurnal Harian</h2>
+  <table><thead><tr><th>Tanggal</th><th>No TRX</th><th>Keterangan</th><th>Kategori</th><th style="text-align:right">Debit (Rp)</th><th style="text-align:right">Kredit (Rp)</th></tr></thead><tbody>
+  ${jurnal.map(r=>`<tr><td>${r.tanggal||""}</td><td>${r.no_trx||""}</td><td>${r.keterangan||""}</td><td>${(r.kategori||"").replace(/_/g," ")}</td><td style="text-align:right">${r.debit>0?r.debit.toLocaleString("id-ID"):"-"}</td><td style="text-align:right">${r.kredit>0?r.kredit.toLocaleString("id-ID"):"-"}</td></tr>`).join("")}
+  </tbody></table>
+  <h2>👥 Rekap Gaji Karyawan</h2>
+  <table><thead><tr><th>Nama</th><th>Jabatan</th><th style="text-align:right">Gaji Pokok</th><th style="text-align:right">Uang Makan</th><th style="text-align:right">Net Gaji</th></tr></thead><tbody>
+  ${gr.map(r=>`<tr><td>${r.nama}</td><td>${r.jabatan}</td><td style="text-align:right">${(r.gaji_pokok||0).toLocaleString("id-ID")}</td><td style="text-align:right">${(r.uang_makan||0).toLocaleString("id-ID")}</td><td style="text-align:right;font-weight:700">${(r.net_gaji||0).toLocaleString("id-ID")}</td></tr>`).join("")}
+  <tr style="background:#f0f0f0;font-weight:700"><td colspan="3">TOTAL</td><td></td><td style="text-align:right">${gr.reduce((s,r)=>s+(r.net_gaji||0),0).toLocaleString("id-ID")}</td></tr>
+  </tbody></table>
+  <h2>⚙️ OPEX vs Anggaran</h2>
+  <table><thead><tr><th>Kategori</th><th style="text-align:right">Anggaran</th><th style="text-align:right">Aktual</th><th style="text-align:right">Selisih</th><th>Status</th></tr></thead><tbody>
+  ${opex.map(r=>{const s=(r.anggaran||0)-(r.aktual||0);return`<tr><td>${r.kategori}</td><td style="text-align:right">${(r.anggaran||0).toLocaleString("id-ID")}</td><td style="text-align:right">${(r.aktual||0).toLocaleString("id-ID")}</td><td style="text-align:right;color:${s>=0?"#27ae60":"#c0392b"}">${s.toLocaleString("id-ID")}</td><td>${s>=0?"✅ On Budget":"⚠️ Over Budget"}</td></tr>`;}).join("")}
+  </tbody></table>
+  <div style="text-align:center;margin-top:30px;color:#666;font-size:10px;border-top:1px solid #eee;padding-top:10px">
+    Cleco Pii Coffee & Eatery · JL Nusantara Raya No 214 Beji, Depok · @cleco.pii · +62 881-8766-608
+  </div>
+  <script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();
 }
 
 loadAll();

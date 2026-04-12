@@ -101,7 +101,7 @@ const MENUS = {
   kitchen: [{id:"pengeluaran",icon:"🛒",label:"Pengeluaran"},{id:"stok_masuk",icon:"📦",label:"Stok Masuk"},{id:"stok_keluar",icon:"📤",label:"Stok Keluar"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
   waiter:  [{id:"penjualan",icon:"💰",label:"Penjualan"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
   konten:  [{id:"konten",icon:"📲",label:"Konten"},{id:"promo",icon:"🎯",label:"Promo"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
-  owner:   [{id:"penjualan",icon:"💰",label:"Penjualan"},{id:"pengeluaran",icon:"🛒",label:"Pengeluaran"},{id:"stok_masuk",icon:"📦",label:"Stok Masuk"},{id:"stok_keluar",icon:"📤",label:"Stok Keluar"},{id:"gaji",icon:"💼",label:"Gaji/Kasbon"},{id:"konten",icon:"📲",label:"Konten"},{id:"promo",icon:"🎯",label:"Promo"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
+  owner:   [{id:"penjualan",icon:"💰",label:"Penjualan"},{id:"pengeluaran",icon:"🛒",label:"Pengeluaran"},{id:"stok_masuk",icon:"📦",label:"Stok Masuk"},{id:"stok_keluar",icon:"📤",label:"Stok Keluar"},{id:"gaji",icon:"💼",label:"Gaji/Kasbon"},{id:"opex",icon:"⚙️",label:"OPEX"},{id:"konten",icon:"📲",label:"Konten"},{id:"promo",icon:"🎯",label:"Promo"},{id:"riwayat",icon:"📋",label:"Riwayat"}],
 };
 
 let pinBuf="", user=null, activeTab="", stokData=[];
@@ -288,6 +288,28 @@ function buildSection(id){
     </div>
   </div>`;
 
+  if(id==="opex") return `<div class="card">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">⚙️ Update Anggaran OPEX</div>
+    <div class="info" style="margin-bottom:12px">📌 Set anggaran bulanan per kategori. Aktual otomatis diambil dari jurnal pengeluaran.</div>
+    <div id="opexEditList"><div style="text-align:center;color:#7AADAD;font-size:12px;padding:20px">Memuat data OPEX...</div></div>
+    <div style="margin-top:16px;border-top:1px solid #2D5555;padding-top:14px">
+      <div style="font-size:12px;color:#C9A84C;font-weight:700;margin-bottom:10px">➕ Tambah Kategori OPEX Baru</div>
+      <label>Nama Kategori</label><select id="opexKatBaru">
+        <option value="BAHAN_BAR">Bahan Bar</option>
+        <option value="BAHAN_KITCHEN">Bahan Kitchen</option>
+        <option value="OPERASIONAL">Operasional</option>
+        <option value="LISTRIK">Listrik</option>
+        <option value="INTERNET">Internet</option>
+        <option value="KEAMANAN">Keamanan</option>
+        <option value="SEWA">Sewa Tempat</option>
+        <option value="GAJI">Gaji Karyawan</option>
+        <option value="LAIN_LAIN">Lain-lain</option>
+      </select>
+      <label>Anggaran (Rp)</label><input type="number" id="opexAnggaranBaru" placeholder="Contoh: 2000000">
+      <button class="btn-gold" onclick="submitOpexBaru()">💾 Tambah OPEX</button>
+    </div>
+  </div>`;
+
   if(id==="riwayat") return `<div class="card">
     <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📋 Riwayat Input Hari Ini</div>
     <div id="riwayatList"><div style="text-align:center;color:#7AADAD;padding:20px;font-size:12px">Memuat...</div></div>
@@ -375,6 +397,16 @@ async function submitPengeluaran(){
   try{
     const no=await nextTrx();
     await sbPost("jurnal_harian",{tanggal:tgl,no_trx:no,keterangan:nama+(ket?" — "+ket:""),kategori:kat,debit:0,kredit:jml,sumber:"staff_"+user.nama.toLowerCase()});
+    // Auto-update aktual di tabel opex
+    try{
+      const opexRow=await sbGet("opex","select=id,aktual&kategori=eq."+kat);
+      if(opexRow&&opexRow.length>0){
+        await sbPatch("opex","id=eq."+opexRow[0].id,{aktual:(opexRow[0].aktual||0)+jml});
+      } else {
+        // Buat row baru jika kategori belum ada di opex
+        await sbPost("opex",{kategori:kat,anggaran:0,aktual:jml});
+      }
+    }catch(e2){console.warn("OPEX update skipped:",e2.message);}
     toast("✅ Pengeluaran "+nama+" Rp "+jml.toLocaleString("id-ID")+" tersimpan!");
     document.getElementById("eNama").value="";document.getElementById("eJml").value="";document.getElementById("eKet").value="";
   }catch(e){toast("❌ "+e.message,false);}
@@ -500,16 +532,72 @@ async function loadRiwayat(){
   if(!el)return;
   el.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:10px">Memuat...</div>';
   const today=new Date().toISOString().slice(0,10);
-  const KAT_C={PEMASUKAN:"#C9A84C",BAHAN_BAR:"#2D9D9D",BAHAN_KITCHEN:"#3DAD8D",GAJI:"#E07B54",OPERASIONAL:"#7B5EA7",LAIN_LAIN:"#808080"};
+  const KAT_C={PEMASUKAN:"#C9A84C",BAHAN_BAR:"#2D9D9D",BAHAN_KITCHEN:"#3DAD8D",GAJI:"#E07B54",OPERASIONAL:"#7B5EA7",LISTRIK:"#5496E0",INTERNET:"#36A2E0",KEAMANAN:"#A07060",SEWA:"#E05454",LAIN_LAIN:"#808080"};
   try{
-    const data=await sbGet("jurnal_harian","select=*&order=created_at.desc&tanggal=eq."+today+"&limit=30");
+    const data=await sbGet("jurnal_harian","select=*&tanggal=eq."+today+"&order=created_at.desc&limit=30");
     if(!data||!data.length){el.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:20px">Belum ada transaksi hari ini</div>';return;}
     el.innerHTML=data.map(r=>`<div class="ritem"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.keterangan}</div><div style="font-size:10px;color:#7AADAD;margin-top:2px">${r.no_trx||""} · <span style="color:${KAT_C[r.kategori]||"#7AADAD"}">${(r.kategori||"").replace(/_/g," ")}</span></div></div><div style="text-align:right;flex-shrink:0;margin-left:10px">${r.debit>0?`<div style="color:#C9A84C;font-weight:700;font-size:12px">+Rp ${r.debit.toLocaleString("id-ID")}</div>`:""}${r.kredit>0?`<div style="color:#E07B54;font-weight:700;font-size:12px">-Rp ${r.kredit.toLocaleString("id-ID")}</div>`:""}</div></div>`).join("");
   }catch(e){el.innerHTML='<div style="color:#FF6B6B;font-size:12px;padding:10px">❌ '+e.message+'</div>';}
 }
 
 // Auto-load promo list when promo section active
-const origSwitchSec = switchSec;
+const _origSwitchSec = switchSec;
+function switchSec(id){
+  _origSwitchSec(id);
+  if(id==="promo") loadPromoList();
+  if(id==="opex") loadOpexEdit();
+}
+
+// ── OPEX FUNCTIONS ───────────────────────────
+async function loadOpexEdit(){
+  const el=document.getElementById("opexEditList");
+  if(!el)return;
+  try{
+    const data=await sbGet("opex","select=id,kategori,anggaran,aktual&order=kategori");
+    if(!data||!data.length){el.innerHTML='<div style="color:#7AADAD;font-size:12px;text-align:center;padding:16px">Belum ada data OPEX. Tambah kategori baru di bawah.</div>';return;}
+    el.innerHTML=data.map(o=>`
+      <div class="ritem" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:12px;font-weight:700;color:#C9A84C">${o.kategori.replace(/_/g," ")}</div>
+          <div style="font-size:10px;color:${o.aktual>o.anggaran?"#FF6B6B":"#4CAF50"}">${o.aktual>o.anggaran?"⚠️ Over":"✅ OK"} — Aktual: Rp ${(o.aktual||0).toLocaleString("id-ID")}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="number" id="opex_${o.id}" value="${o.anggaran||0}" style="flex:1;background:#0F2E2E;border:1px solid #2D5555;border-radius:8px;padding:9px 12px;color:#E8F4F4;font-size:13px;font-family:inherit;outline:none" placeholder="Anggaran">
+          <button onclick="saveOpex('${o.id}')" style="background:#C9A84C33;color:#C9A84C;border:1px solid #C9A84C44;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">💾 Save</button>
+        </div>
+      </div>`).join("");
+  }catch(e){el.innerHTML='<div style="color:#FF6B6B;font-size:12px;padding:10px">❌ '+e.message+'</div>';}
+}
+
+async function saveOpex(id){
+  const val=parseInt(document.getElementById("opex_"+id)?.value);
+  if(!val||val<0){toast("❌ Masukkan angka anggaran yang valid",false);return;}
+  try{
+    await sbPatch("opex","id=eq."+id,{anggaran:val});
+    toast("✅ Anggaran diperbarui: Rp "+val.toLocaleString("id-ID"));
+    loadOpexEdit();
+  }catch(e){toast("❌ "+e.message,false);}
+}
+
+async function submitOpexBaru(){
+  const kat=document.getElementById("opexKatBaru")?.value;
+  const ang=parseInt(document.getElementById("opexAnggaranBaru")?.value);
+  if(!kat||!ang||ang<=0){toast("❌ Isi kategori dan anggaran",false);return;}
+  try{
+    // Check if category already exists
+    const existing=await sbGet("opex","select=id&kategori=eq."+kat);
+    if(existing&&existing.length>0){
+      await sbPatch("opex","kategori=eq."+kat,{anggaran:ang});
+      toast("✅ Anggaran "+kat+" diperbarui");
+    } else {
+      await sbPost("opex",{kategori:kat,anggaran:ang,aktual:0});
+      toast("✅ Kategori OPEX "+kat+" ditambahkan");
+    }
+    document.getElementById("opexAnggaranBaru").value="";
+    loadOpexEdit();
+  }catch(e){toast("❌ "+e.message,false);}
+}
+
 </script>
 </body>
 </html>

@@ -171,6 +171,8 @@ function switchSec(id){
   activeTab=id;
   if(id==="riwayat")loadRiwayat();
   if(id==="stok_masuk"||id==="stok_keluar")loadStok();
+  if(id==="promo")loadPromoList();
+  if(id==="opex")loadOpexEdit();
 }
 
 // ── BUILD SECTION HTML ───────────────────────
@@ -540,13 +542,7 @@ async function loadRiwayat(){
   }catch(e){el.innerHTML='<div style="color:#FF6B6B;font-size:12px;padding:10px">❌ '+e.message+'</div>';}
 }
 
-// Auto-load promo list when promo section active
-const _origSwitchSec = switchSec;
-function switchSec(id){
-  _origSwitchSec(id);
-  if(id==="promo") loadPromoList();
-  if(id==="opex") loadOpexEdit();
-}
+
 
 // ── OPEX FUNCTIONS ───────────────────────────
 async function loadOpexEdit(){

@@ -467,6 +467,14 @@ async function submitGaji(){
   try{
     const no=await nextTrx();
     await sbPost("jurnal_harian",{tanggal:tgl,no_trx:no,keterangan:label+" "+nama+(ket?" — "+ket:""),kategori:"GAJI",debit:0,kredit:jml,sumber:"owner"});
+    try{
+      const opexRow=await sbGet("opex","select=id,aktual&kategori=eq.GAJI");
+      if(opexRow&&opexRow.length>0){
+        await sbPatch("opex","id=eq."+opexRow[0].id,{aktual:(opexRow[0].aktual||0)+jml});
+      } else {
+        await sbPost("opex",{kategori:"GAJI",anggaran:0,aktual:jml});
+      }
+    }catch(e2){console.warn("OPEX GAJI update skipped:",e2.message);}
     toast("✅ "+label+" "+nama+" Rp "+jml.toLocaleString("id-ID")+" dicatat!");
     document.getElementById("gJml").value="";document.getElementById("gKet").value="";
   }catch(e){toast("❌ "+e.message,false);}

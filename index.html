@@ -217,10 +217,14 @@ function render(){
     svg.innerHTML='<defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9A84C" stop-opacity="0.4"/><stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/></linearGradient></defs><path d="'+area+'" fill="url(#g1)"/><polyline points="'+poly+'" fill="none" stroke="#C9A84C" stroke-width="2"/>'+pts.map(function(p){return'<circle cx="'+p.x+'" cy="'+p.y+'" r="2.5" fill="#C9A84C"/>';}).join("");
   }else{svg.innerHTML='<text x="100" y="40" text-anchor="middle" fill="#7AADAD" font-size="10">Data belum cukup</text>';}
 
-  // OPEX
-  el("opexGrid").innerHTML=opx.map(function(o){
+  // OPEX - aktual dihitung langsung dari jurnal agar akurat
+  var opexActMap={};
+  jrl.forEach(function(r){if(r.kategori!=="PEMASUKAN"){opexActMap[r.kategori]=(opexActMap[r.kategori]||0)+(r.kredit||0);}});
+  var opexDisplay=opx.map(function(o){return{kategori:o.kategori,anggaran:o.anggaran||0,aktual:opexActMap[o.kategori]||0};});
+  Object.keys(opexActMap).forEach(function(kat){if(!opx.find(function(o){return o.kategori===kat;}))opexDisplay.push({kategori:kat,anggaran:0,aktual:opexActMap[kat]});});
+  el("opexGrid").innerHTML=opexDisplay.map(function(o){
     var p=o.anggaran>0?Math.round(o.aktual/o.anggaran*100):0;
-    var ov=o.aktual>o.anggaran;
+    var ov=o.aktual>o.anggaran&&o.anggaran>0;
     return '<div style="background:#1A3A3A;border-radius:8px;padding:10px"><div style="font-size:9px;color:#7AADAD;text-transform:uppercase;margin-bottom:3px">'+o.kategori+'</div><div style="font-size:12px;font-weight:700;color:'+(ov?"#FF6B6B":"#E8F4F4")+'">'+fRp(o.aktual)+'</div><div style="font-size:9px;color:#4A7A7A;margin:2px 0">dari '+fRp(o.anggaran)+'</div><div style="height:3px;background:#0F2E2E;border-radius:2px;overflow:hidden"><div style="height:100%;width:'+Math.min(p,100)+'%;background:'+(ov?"#FF6B6B":"#C9A84C")+';border-radius:2px"></div></div><div style="font-size:9px;color:'+(ov?"#FF6B6B":"#4CAF50")+';font-weight:700;margin-top:3px">'+(ov?"⚠️ Over":"✅ OK")+" "+p+'%</div></div>';
   }).join("");
 
@@ -319,6 +323,7 @@ function exportPDF(){
 }
 
 loadAll();
+setInterval(loadAll, 60000);
 </script>
 </body>
 </html>

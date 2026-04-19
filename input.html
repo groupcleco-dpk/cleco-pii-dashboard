@@ -79,6 +79,33 @@ input:focus,select:focus{border-color:#C9A84C;box-shadow:0 0 0 2px #C9A84C22}
   <div id="sections" style="margin-top:12px"></div>
 </div>
 
+<!-- EDIT MODAL -->
+<div id="editModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000000BB;z-index:500;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#0F2E2E;border:1px solid #2D5555;border-radius:12px;padding:16px;width:100%;max-width:480px">
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">✏️ Edit Transaksi</div>
+    <input type="hidden" id="editId">
+    <label>Tanggal</label><input type="date" id="editTgl">
+    <label>Keterangan</label><input type="text" id="editKet" placeholder="Keterangan transaksi">
+    <label>Kategori</label>
+    <select id="editKat">
+      <option value="PEMASUKAN">PEMASUKAN</option>
+      <option value="BAHAN_BAR">BAHAN BAR</option>
+      <option value="BAHAN_KITCHEN">BAHAN KITCHEN</option>
+      <option value="GAJI">GAJI</option>
+      <option value="OPERASIONAL">OPERASIONAL</option>
+      <option value="LISTRIK">LISTRIK</option>
+      <option value="INTERNET">INTERNET</option>
+      <option value="KEAMANAN">KEAMANAN</option>
+      <option value="SEWA">SEWA</option>
+      <option value="LAIN_LAIN">LAIN-LAIN</option>
+    </select>
+    <label>Debit / Pemasukan (Rp)</label><input type="number" id="editDebit" placeholder="0">
+    <label>Kredit / Pengeluaran (Rp)</label><input type="number" id="editKredit" placeholder="0">
+    <button class="btn-gold" onclick="saveEdit()">💾 Simpan Perubahan</button>
+    <button class="btn-outline" onclick="closeEdit()">Batal</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -169,7 +196,14 @@ function switchSec(id){
     if(b){b.style.background=m.id===id?"linear-gradient(135deg,#C9A84C,#E8C96D)":"#1A3A3A";b.style.color=m.id===id?"#071E1E":"#7AADAD";}
   });
   activeTab=id;
-  if(id==="riwayat")loadRiwayat();
+  if(id==="riwayat"){
+    const today=new Date().toISOString().slice(0,10);
+    const firstDay=today.slice(0,8)+"01";
+    const rf=document.getElementById("rvFrom"),rt=document.getElementById("rvTo");
+    if(rf&&!rf.value)rf.value=firstDay;
+    if(rt&&!rt.value)rt.value=today;
+    loadRiwayat();
+  }
   if(id==="stok_masuk"||id==="stok_keluar")loadStok();
   if(id==="promo")loadPromoList();
   if(id==="opex")loadOpexEdit();
@@ -313,9 +347,18 @@ function buildSection(id){
   </div>`;
 
   if(id==="riwayat") return `<div class="card">
-    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📋 Riwayat Input Hari Ini</div>
-    <div id="riwayatList"><div style="text-align:center;color:#7AADAD;padding:20px;font-size:12px">Memuat...</div></div>
-    <button class="btn-outline" onclick="loadRiwayat()">↻ Refresh</button>
+    <div style="font-size:14px;font-weight:700;color:#C9A84C;margin-bottom:12px">📋 Riwayat Transaksi</div>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1"><label style="margin-top:0">Dari Tanggal</label><input type="date" id="rvFrom"></div>
+      <div style="flex:1"><label style="margin-top:0">Sampai</label><input type="date" id="rvTo"></div>
+    </div>
+    <button class="btn-gold" onclick="loadRiwayat()">🔍 Tampilkan</button>
+    <div id="riwayatList" style="margin-top:10px"><div style="text-align:center;color:#7AADAD;padding:20px;font-size:12px">Pilih tanggal lalu klik Tampilkan</div></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-outline" onclick="loadRiwayat()" style="flex:1">↻ Refresh</button>
+      <button class="btn-outline" onclick="exportRiwayatPDF()" style="flex:1;color:#C9A84C;border-color:#C9A84C44">📄 Export PDF</button>
+      <button class="btn-outline" onclick="exportRiwayatCSV()" style="flex:1;color:#4CAF50;border-color:#4CAF5044">📊 Excel</button>
+    </div>
   </div>`;
   return "<div class='card'>Section tidak ditemukan</div>";
 }
@@ -346,6 +389,10 @@ async function sbPost(table,data){
 }
 async function sbPatch(table,filter,data){
   const r=await fetch(`${SB}/${table}?${filter}`,{method:"PATCH",headers:H,body:JSON.stringify(data)});
+  if(!r.ok){const e=await r.json();throw new Error(e.message||r.status);}
+}
+async function sbDelete(table,filter){
+  const r=await fetch(`${SB}/${table}?${filter}`,{method:"DELETE",headers:H});
   if(!r.ok){const e=await r.json();throw new Error(e.message||r.status);}
 }
 async function nextTrx(){
@@ -467,6 +514,14 @@ async function submitGaji(){
   try{
     const no=await nextTrx();
     await sbPost("jurnal_harian",{tanggal:tgl,no_trx:no,keterangan:label+" "+nama+(ket?" — "+ket:""),kategori:"GAJI",debit:0,kredit:jml,sumber:"owner"});
+    try{
+      const opexRow=await sbGet("opex","select=id,aktual&kategori=eq.GAJI");
+      if(opexRow&&opexRow.length>0){
+        await sbPatch("opex","id=eq."+opexRow[0].id,{aktual:(opexRow[0].aktual||0)+jml});
+      } else {
+        await sbPost("opex",{kategori:"GAJI",anggaran:0,aktual:jml});
+      }
+    }catch(e2){console.warn("OPEX GAJI update skipped:",e2.message);}
     toast("✅ "+label+" "+nama+" Rp "+jml.toLocaleString("id-ID")+" dicatat!");
     document.getElementById("gJml").value="";document.getElementById("gKet").value="";
   }catch(e){toast("❌ "+e.message,false);}
@@ -530,16 +585,116 @@ async function loadPromoList(){
 }
 
 async function loadRiwayat(){
-  const el=document.getElementById("riwayatList");
-  if(!el)return;
-  el.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:10px">Memuat...</div>';
-  const today=new Date().toISOString().slice(0,10);
+  const listEl=document.getElementById("riwayatList");
+  if(!listEl)return;
+  listEl.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:10px">Memuat...</div>';
+  const from=document.getElementById("rvFrom")?.value||new Date().toISOString().slice(0,10);
+  const to=document.getElementById("rvTo")?.value||from;
   const KAT_C={PEMASUKAN:"#C9A84C",BAHAN_BAR:"#2D9D9D",BAHAN_KITCHEN:"#3DAD8D",GAJI:"#E07B54",OPERASIONAL:"#7B5EA7",LISTRIK:"#5496E0",INTERNET:"#36A2E0",KEAMANAN:"#A07060",SEWA:"#E05454",LAIN_LAIN:"#808080"};
   try{
-    const data=await sbGet("jurnal_harian","select=*&tanggal=eq."+today+"&order=created_at.desc&limit=30");
-    if(!data||!data.length){el.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:20px">Belum ada transaksi hari ini</div>';return;}
-    el.innerHTML=data.map(r=>`<div class="ritem"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.keterangan}</div><div style="font-size:10px;color:#7AADAD;margin-top:2px">${r.no_trx||""} · <span style="color:${KAT_C[r.kategori]||"#7AADAD"}">${(r.kategori||"").replace(/_/g," ")}</span></div></div><div style="text-align:right;flex-shrink:0;margin-left:10px">${r.debit>0?`<div style="color:#C9A84C;font-weight:700;font-size:12px">+Rp ${r.debit.toLocaleString("id-ID")}</div>`:""}${r.kredit>0?`<div style="color:#E07B54;font-weight:700;font-size:12px">-Rp ${r.kredit.toLocaleString("id-ID")}</div>`:""}</div></div>`).join("");
-  }catch(e){el.innerHTML='<div style="color:#FF6B6B;font-size:12px;padding:10px">❌ '+e.message+'</div>';}
+    const data=await sbGet("jurnal_harian","select=*&tanggal=gte."+from+"&tanggal=lte."+to+"&order=tanggal.desc,created_at.desc&limit=200");
+    if(!data||!data.length){listEl.innerHTML='<div style="text-align:center;color:#7AADAD;font-size:12px;padding:20px">Tidak ada transaksi di periode ini</div>';return;}
+    let totalMasuk=0,totalKeluar=0;
+    data.forEach(r=>{totalMasuk+=(r.debit||0);totalKeluar+=(r.kredit||0);});
+    const summaryHtml=`<div style="display:flex;gap:8px;margin-bottom:10px">
+      <div style="flex:1;background:#1A3A2A;border-radius:8px;padding:8px;text-align:center"><div style="font-size:9px;color:#7AADAD">PEMASUKAN</div><div style="font-size:12px;font-weight:700;color:#C9A84C">Rp ${totalMasuk.toLocaleString("id-ID")}</div></div>
+      <div style="flex:1;background:#3A1A1A;border-radius:8px;padding:8px;text-align:center"><div style="font-size:9px;color:#7AADAD">PENGELUARAN</div><div style="font-size:12px;font-weight:700;color:#E07B54">Rp ${totalKeluar.toLocaleString("id-ID")}</div></div>
+    </div>`;
+    listEl.innerHTML=summaryHtml+data.map(r=>{
+      const safeKet=(r.keterangan||"").replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+      return `<div class="ritem" style="gap:6px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.keterangan||""}</div>
+          <div style="font-size:10px;color:#7AADAD;margin-top:2px">${r.tanggal||""} · ${r.no_trx||""} · <span style="color:${KAT_C[r.kategori]||"#7AADAD"}">${(r.kategori||"").replace(/_/g," ")}</span></div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          ${r.debit>0?`<div style="color:#C9A84C;font-weight:700;font-size:12px">+Rp ${r.debit.toLocaleString("id-ID")}</div>`:""}
+          ${r.kredit>0?`<div style="color:#E07B54;font-weight:700;font-size:12px">-Rp ${r.kredit.toLocaleString("id-ID")}</div>`:""}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0">
+          <button onclick="editEntry('${r.id}','${safeKet}','${r.kategori||""}',${r.debit||0},${r.kredit||0},'${r.tanggal||""}')" style="background:#1A3A5A;color:#5496E0;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer" title="Edit">✏️</button>
+          <button onclick="deleteEntry('${r.id}')" style="background:#3A1A1A;color:#FF6B6B;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer" title="Hapus">🗑️</button>
+        </div>
+      </div>`;
+    }).join("");
+  }catch(e){listEl.innerHTML='<div style="color:#FF6B6B;font-size:12px;padding:10px">❌ '+e.message+'</div>';}
+}
+
+function editEntry(id,ket,kat,debit,kredit,tgl){
+  document.getElementById("editId").value=id;
+  document.getElementById("editTgl").value=tgl;
+  document.getElementById("editKet").value=ket;
+  document.getElementById("editKat").value=kat;
+  document.getElementById("editDebit").value=debit||"";
+  document.getElementById("editKredit").value=kredit||"";
+  const m=document.getElementById("editModal");
+  m.style.display="flex";
+}
+function closeEdit(){document.getElementById("editModal").style.display="none";}
+async function saveEdit(){
+  const id=document.getElementById("editId").value;
+  const tgl=document.getElementById("editTgl").value;
+  const ket=document.getElementById("editKet").value;
+  const kat=document.getElementById("editKat").value;
+  const debit=parseInt(document.getElementById("editDebit").value)||0;
+  const kredit=parseInt(document.getElementById("editKredit").value)||0;
+  if(!id||!tgl||!ket){toast("❌ Isi semua field",false);return;}
+  try{
+    await sbPatch("jurnal_harian","id=eq."+id,{tanggal:tgl,keterangan:ket,kategori:kat,debit,kredit});
+    closeEdit();
+    toast("✅ Transaksi berhasil diperbarui");
+    loadRiwayat();
+  }catch(e){toast("❌ "+e.message,false);}
+}
+async function deleteEntry(id){
+  if(!confirm("Hapus transaksi ini?\nTindakan tidak dapat dibatalkan."))return;
+  try{
+    await sbDelete("jurnal_harian","id=eq."+id);
+    toast("✅ Transaksi dihapus");
+    loadRiwayat();
+  }catch(e){toast("❌ "+e.message,false);}
+}
+
+async function exportRiwayatPDF(){
+  const from=document.getElementById("rvFrom")?.value||new Date().toISOString().slice(0,10);
+  const to=document.getElementById("rvTo")?.value||from;
+  const data=await sbGet("jurnal_harian","select=*&tanggal=gte."+from+"&tanggal=lte."+to+"&order=tanggal.asc,created_at.asc&limit=500");
+  if(!data||!data.length){toast("❌ Tidak ada data untuk di-export",false);return;}
+  const masuk=data.filter(r=>r.kategori==="PEMASUKAN").reduce((s,r)=>s+(r.debit||0),0);
+  const keluar=data.filter(r=>r.kategori!=="PEMASUKAN").reduce((s,r)=>s+(r.kredit||0),0);
+  const rows=data.map(r=>`<tr><td>${r.tanggal||""}</td><td>${r.no_trx||""}</td><td>${r.keterangan||""}</td><td>${(r.kategori||"").replace(/_/g," ")}</td><td style="text-align:right">${r.debit>0?r.debit.toLocaleString("id-ID"):"-"}</td><td style="text-align:right">${r.kredit>0?r.kredit.toLocaleString("id-ID"):"-"}</td></tr>`).join("");
+  const w=window.open("","_blank");
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Laporan Cleco Pii</title><style>body{font-family:Arial,sans-serif;font-size:12px;padding:20px}h1{color:#0D4A4A;border-bottom:2px solid #C9A84C;padding-bottom:8px}table{width:100%;border-collapse:collapse;margin-top:12px}th{background:#0D4A4A;color:#fff;padding:6px 8px;text-align:left}td{padding:5px 8px;border-bottom:1px solid #eee}tr:nth-child(even){background:#f9f9f9}.sb{display:flex;gap:16px;margin:12px 0;padding:12px;background:#f0f0f0;border-radius:6px}@media print{button{display:none}}</style></head><body>
+  <h1>☕ LAPORAN CLECO PII</h1>
+  <p>Periode: <b>${from} s/d ${to}</b> &nbsp;·&nbsp; Dicetak: ${new Date().toLocaleDateString("id-ID")}</p>
+  <div class="sb">
+    <div><b>Total Pemasukan</b><br>Rp ${masuk.toLocaleString("id-ID")}</div>
+    <div><b>Total Pengeluaran</b><br>Rp ${keluar.toLocaleString("id-ID")}</div>
+    <div><b>Net Cash Flow</b><br>Rp ${(masuk-keluar).toLocaleString("id-ID")}</div>
+    <div><b>Jumlah Transaksi</b><br>${data.length} entri</div>
+  </div>
+  <table><thead><tr><th>Tanggal</th><th>No TRX</th><th>Keterangan</th><th>Kategori</th><th style="text-align:right">Debit</th><th style="text-align:right">Kredit</th></tr></thead><tbody>${rows}</tbody></table>
+  <div style="text-align:center;margin-top:24px;font-size:10px;color:#666;border-top:1px solid #ddd;padding-top:8px">Cleco Pii Coffee & Eatery · JL Nusantara Raya No 214 Beji, Depok · @cleco.pii · +62 881-8766-608</div>
+  <script>window.onload=function(){window.print();}<\/script></body></html>`);
+  w.document.close();
+}
+
+async function exportRiwayatCSV(){
+  const from=document.getElementById("rvFrom")?.value||new Date().toISOString().slice(0,10);
+  const to=document.getElementById("rvTo")?.value||from;
+  const data=await sbGet("jurnal_harian","select=*&tanggal=gte."+from+"&tanggal=lte."+to+"&order=tanggal.asc,created_at.asc&limit=500");
+  if(!data||!data.length){toast("❌ Tidak ada data untuk di-export",false);return;}
+  const masuk=data.filter(r=>r.kategori==="PEMASUKAN").reduce((s,r)=>s+(r.debit||0),0);
+  const keluar=data.filter(r=>r.kategori!=="PEMASUKAN").reduce((s,r)=>s+(r.kredit||0),0);
+  let csv=`LAPORAN CLECO PII\nPeriode:,${from} s/d ${to}\nDicetak:,${new Date().toLocaleDateString("id-ID")}\n\n`;
+  csv+="Tanggal,No TRX,Keterangan,Kategori,Debit,Kredit\n";
+  data.forEach(r=>{csv+=`${r.tanggal||""},${r.no_trx||""},"${(r.keterangan||"").replace(/"/g,'""')}",${(r.kategori||"").replace(/_/g," ")},${r.debit||0},${r.kredit||0}\n`;});
+  csv+=`\nTotal Pemasukan,,,,${masuk},0\nTotal Pengeluaran,,,,0,${keluar}\nNet Cash Flow,,,,,${masuk-keluar}\n`;
+  const a=document.createElement("a");
+  a.href="data:text/csv;charset=utf-8,\uFEFF"+encodeURIComponent(csv);
+  a.download="Laporan_ClecoPii_"+from+"_sd_"+to+".csv";
+  a.click();
+  toast("✅ File Excel/CSV berhasil diunduh");
 }
 
 
